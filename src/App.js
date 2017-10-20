@@ -1,53 +1,17 @@
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
-import Theme from './theme';
+import React from 'react'
+import { ThemeProvider } from 'react-native-material-ui'
+import Root from './routes'
+import Theme from './theme'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-  'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-  'Shake or press menu button for dev menu',
-});
-
-export default class App extends Component<{}> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+const uiTheme = {
+  palette: {
+    primaryColor: Theme.accentColor
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Theme.accentColor,
-  },
-  welcome: {
-    fontSize: 20,
-    color: 'white',
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#eee',
-    marginBottom: 5,
-  },
-});
+const App = () =>
+  <ThemeProvider uiTheme={uiTheme}>
+    <Root/>
+  </ThemeProvider>
+
+export default App
