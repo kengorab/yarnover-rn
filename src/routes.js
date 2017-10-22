@@ -1,28 +1,60 @@
 import { StackNavigator } from 'react-navigation'
+import AuthScreen from './screens/AuthScreen'
+import HotRightNowScreen from './screens/HotRightNowScreen'
 import SplashScreen from './screens/SplashScreen'
 import Theme from './theme'
-
-export const screens = {
-  SPLASH_SCREEN: 'SplashScreen'
-}
-
-const screenConfig = {
-  [screens.SPLASH_SCREEN]: {
-    screen: SplashScreen,
-    navigationOptions: {
-      header: null
-    }
-  }
-}
 
 const globalOptions = {
   navigationOptions: {
     headerStyle: {
       backgroundColor: Theme.accentColor
     },
-    headerTintColor: Theme.headerTextColor
+    headerTintColor: Theme.headerTextColor,
+    headerTitleStyle: {
+      fontFamily: 'sans-serif-light'
+    }
   }
 }
 
-export default StackNavigator(screenConfig, globalOptions)
+export const authScreens = {
+  SPLASH_SCREEN: 'SplashScreen',
+  AUTH_SCREEN: 'AuthScreen'
+}
+
+const authScreenConfig = {
+  [authScreens.SPLASH_SCREEN]: {
+    screen: SplashScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  [authScreens.AUTH_SCREEN]: {
+    screen: AuthScreen,
+    navigationOptions: {
+      header: null
+    }
+  }
+}
+
+const AuthNavigator = StackNavigator(authScreenConfig, globalOptions)
+
+export const appScreens = {
+  HOT_RIGHT_NOW_SCREEN: 'HotRightNowScreen'
+}
+
+const appScreenConfig = {
+  [appScreens.HOT_RIGHT_NOW_SCREEN]: {
+    screen: HotRightNowScreen,
+    navigationOptions: {
+      title: 'Hot Right Now'
+    }
+  }
+}
+
+const AppNavigator = StackNavigator(appScreenConfig, globalOptions)
+
+export default {
+  AuthNavigator,
+  AppNavigator
+}
 

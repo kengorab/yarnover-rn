@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-material-ui'
+import { authScreens } from '../routes'
 import YarnBall from '../svg/YarnBall'
 import Theme from '../theme'
 
 export default class SplashScreen extends Component {
+  goToAuthScreen = () => this.props.navigation.navigate(authScreens.AUTH_SCREEN)
+
   render() {
     return (
       <View style={styles.container}>
@@ -20,6 +23,7 @@ export default class SplashScreen extends Component {
             container: styles.loginButton
           }}
           text="Login to Ravelry"
+          onPress={this.goToAuthScreen}
         />
       </View>
     )
