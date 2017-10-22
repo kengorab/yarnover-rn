@@ -1,5 +1,5 @@
 import OAuthManager from '../oauth/OAuthManager'
-import ravelryConfig from '../oauth/ravelry-config'
+import ravelryConfig from './config'
 
 export const oauthManager = new OAuthManager('ravelry')
 
