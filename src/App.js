@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { ThemeProvider } from 'react-native-material-ui'
+import * as auth from './api/auth'
 import * as StorageManager from './manager/StorageManager'
 import Routes from './routes'
 import Theme from './theme'
@@ -15,7 +16,14 @@ export default class App extends React.Component {
   state = { isReady: false, isAuthenticated: false }
 
   async componentDidMount() {
-    const isAuthenticated = await StorageManager.hasAccessTokenAndSecret()
+    await auth.init()
+    const { token, tokenSecret } = await StorageManager.getAccessTokenAndSecret()
+    const isAuthenticated = !!token && !!tokenSecret
+
+    if (isAuthenticated) {
+      await auth.initClient({ token, tokenSecret })
+    }
+
     this.setState({ isReady: true, isAuthenticated })
   }
 

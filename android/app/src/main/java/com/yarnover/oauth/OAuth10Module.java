@@ -1,4 +1,6 @@
-package com.yarnover.modules;
+package com.yarnover.oauth;
+
+import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
@@ -10,7 +12,9 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.yarnover.util.HttpUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,48 +22,26 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+import okhttp3.Call;
+import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthProvider;
 import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 public class OAuth10Module extends ReactContextBaseJavaModule {
-    private class OAuthProvider {
-        final OkHttpOAuthConsumer consumer;
-        final OkHttpOAuthProvider provider;
-        final String authKey;
-        final String secretKey;
-        final String requestTokenUrl;
-        final String accessTokenUr;
-        final String authorizeUrl;
-        final String callbackUrl;
-
-        OAuthProvider(
-                OkHttpOAuthConsumer consumer,
-                OkHttpOAuthProvider provider,
-                String authKey,
-                String secretKey,
-                String requestTokenUrl,
-                String accessTokenUr,
-                String authorizeUrl,
-                String callbackUrl) {
-            this.consumer = consumer;
-            this.provider = provider;
-            this.authKey = authKey;
-            this.secretKey = secretKey;
-            this.requestTokenUrl = requestTokenUrl;
-            this.accessTokenUr = accessTokenUr;
-            this.authorizeUrl = authorizeUrl;
-            this.callbackUrl = callbackUrl;
-        }
-    }
-
     private static final String PARAM_AUTH_KEY = "authKey";
     private static final String PARAM_SECRET_KEY = "secretKey";
     private static final String PARAM_REQ_TOKEN_URL_KEY = "requestTokenUrl";
     private static final String PARAM_ACCESS_TOKEN_URL_KEY = "accessTokenUrl";
     private static final String PARAM_AUTHORIZE_URL_KEY = "authorizeUrl";
     private static final String PARAM_CALLBACK_URL_KEY = "callbackUrl";
+
+    private static final String TAG = "OAuth10ModuleTag";
 
     private Map<String, OAuthProvider> providers = new HashMap<>();
     private Map<String, OkHttpClient> httpClients = new HashMap<>();
@@ -74,11 +56,7 @@ public class OAuth10Module extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void registerProvider(
-            String providerName,
-            ReadableMap providerParams,
-            Callback callback
-    ) {
+    public void registerProvider(String providerName, ReadableMap providerParams, Callback callback) {
         String[] params = new String[]{PARAM_AUTH_KEY, PARAM_SECRET_KEY, PARAM_REQ_TOKEN_URL_KEY,
                 PARAM_ACCESS_TOKEN_URL_KEY, PARAM_AUTHORIZE_URL_KEY, PARAM_CALLBACK_URL_KEY};
         boolean paramsValid = true;
@@ -114,17 +92,13 @@ public class OAuth10Module extends ReactContextBaseJavaModule {
 
         OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(authKey, secretKey);
         OkHttpOAuthProvider provider = new OkHttpOAuthProvider(requestTokenUrl, accessTokenUrl, authorizeUrl);
-        providers.put(providerName, new OAuthProvider(consumer, provider, authKey, secretKey,
-                requestTokenUrl, accessTokenUrl, authorizeUrl, callbackUrl));
+        providers.put(providerName, new OAuthProvider(consumer, provider, callbackUrl));
 
         callback.invoke((Object) null);
     }
 
     @ReactMethod
-    public void getAuthorizationUrl(
-            String providerName,
-            Promise promise
-    ) {
+    public void getAuthorizationUrl(String providerName, Promise promise) {
         if (!providers.containsKey(providerName)) {
             promise.reject("ENOPROVIDER", "There is no provider configured with name " + providerName);
             return;
@@ -140,11 +114,7 @@ public class OAuth10Module extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAccessToken(
-            String providerName,
-            String oauthVerifier,
-            Promise promise
-    ) {
+    public void getAccessToken(String providerName, String oauthVerifier, Promise promise) {
         if (!providers.containsKey(providerName)) {
             promise.reject("ENOPROVIDER", "There is no provider configured with name " + providerName);
             return;
@@ -162,10 +132,7 @@ public class OAuth10Module extends ReactContextBaseJavaModule {
                 return;
             }
 
-            OkHttpClient httpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new SigningInterceptor(oAuthProvider.consumer))
-                    .build();
-            httpClients.put(providerName, httpClient);
+            registerSignedClient(providerName, oAuthProvider.consumer);
 
             WritableMap accessToken = new WritableNativeMap();
             accessToken.putString("token", token);
@@ -174,5 +141,66 @@ public class OAuth10Module extends ReactContextBaseJavaModule {
         } catch (OAuthMessageSignerException | OAuthNotAuthorizedException | OAuthCommunicationException | OAuthExpectationFailedException e) {
             promise.reject(e);
         }
+    }
+
+    private void registerSignedClient(String providerName, OkHttpOAuthConsumer consumer) {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(new SigningInterceptor(consumer))
+                .build();
+        httpClients.put(providerName, httpClient);
+    }
+
+    @ReactMethod
+    public void registerSignedClient(String providerName, String token, String tokenSecret, Promise promise) {
+        if (!providers.containsKey(providerName)) {
+            promise.reject("ENOPROVIDER", "There is no provider configured with name " + providerName);
+            return;
+        }
+        OAuthProvider oAuthProvider = providers.get(providerName);
+
+        OkHttpOAuthConsumer consumer = oAuthProvider.consumer;
+        consumer.setTokenWithSecret(token, tokenSecret);
+
+        registerSignedClient(providerName, consumer);
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void makeAuthenticatedRequest(String providerName, final String url, final String method, ReadableMap headers, String body, final Promise promise) {
+        if (!httpClients.containsKey(providerName)) {
+            promise.reject("ENOCLIENT", "There is no authenticated client for provider: " + providerName);
+            return;
+        }
+        OkHttpClient client = httpClients.get(providerName);
+
+        RequestBody requestBody = null;
+        if (body != null) {
+            requestBody = RequestBody.create(MediaType.parse("application/json"), body);
+        }
+
+        Headers.Builder headersBuilder = new Headers.Builder();
+        for (Map.Entry<String, Object> entry : headers.toHashMap().entrySet()) {
+            headersBuilder.add(entry.getKey(), (String) entry.getValue());
+        }
+
+        Request request = new Request.Builder()
+                .method(method.toUpperCase(), requestBody)
+                .headers(headersBuilder.build())
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Request to " + method + " " + url + " failed", e);
+                promise.reject(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                WritableMap res = HttpUtils.responseToReact(response);
+                promise.resolve(res);
+            }
+        });
     }
 }

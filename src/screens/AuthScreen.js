@@ -1,23 +1,17 @@
 import React, { Component } from 'react'
 import { Platform, StyleSheet, View, WebView } from 'react-native'
 import * as RNRestart from 'react-native-restart'
+import * as Auth from '../api/auth'
 import * as StorageManager from '../manager/StorageManager'
-import OAuthManager from '../oauth/OAuthManager'
-import ravelryConfig, { callbackUrl } from '../oauth/ravelry-config'
+import { callbackUrl } from '../oauth/ravelry-config'
 import Theme from '../theme'
 import * as UrlUtils from '../util/url-utils'
 
 export default class AuthScreen extends Component {
   state = { displayWebView: false, authorizationUrl: null }
 
-  oauthManager = new OAuthManager('ravelry')
-
   async componentDidMount() {
-    await this.oauthManager
-      .registerProvider(ravelryConfig)
-      .catch(err => console.error(err))
-    const authorizationUrl = await this.oauthManager.getAuthorizationUrl()
-
+    const authorizationUrl = await Auth.oauthManager.getAuthorizationUrl()
     this.setState({ displayWebView: true, authorizationUrl })
   }
 
@@ -32,10 +26,11 @@ export default class AuthScreen extends Component {
       return
     }
 
+    // TODO: Sometimes this doesn't happen fast enough, and the 404 page on kenrg.co gets displayed
     this.setState({ displayWebView: false })
 
     const { oauth_verifier } = UrlUtils.getQueryParams(url)
-    this.oauthManager.getAccessToken(oauth_verifier)
+    Auth.oauthManager.getAccessToken(oauth_verifier)
       .then(({ token, tokenSecret }) => StorageManager.saveAccessTokenAndSecret(token, tokenSecret))
       .then(this._restartApp)
   }

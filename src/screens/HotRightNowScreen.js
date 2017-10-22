@@ -1,12 +1,23 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import * as Ravelry from '../api/Ravelry'
 import Theme from '../theme'
 
 export default class HotRightNowScreen extends Component {
+  state = { currentUser: null }
+
+  async componentDidMount() {
+    const currentUser = await Ravelry.getCurrentUser()
+    this.setState({ currentUser })
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Hot Right Now</Text>
+        {this.state.currentUser
+          ? <Text style={styles.title}>Hello, {this.state.currentUser.username}!</Text>
+          : <Text style={styles.title}>Loading...</Text>
+        }
       </View>
     )
   }
