@@ -1,23 +1,24 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import * as Ravelry from '../api/Ravelry'
+import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Theme from '../theme'
 
 export default class HotRightNowScreen extends Component {
-  state = { currentUser: null }
+  state = { loading: true, patterns: [], currentPage: 0 }
 
   async componentDidMount() {
-    const currentUser = await Ravelry.getCurrentUser()
-    this.setState({ currentUser })
+    const { paginator, patterns } = await Ravelry.searchPatterns()
+    this.setState({ loading: false, patterns, paginator })
   }
 
   render() {
+    if (this.state.loading) {
+      return <Text style={styles.title}>Loading...</Text>
+    }
+
     return (
       <View style={styles.container}>
-        {this.state.currentUser
-          ? <Text style={styles.title}>Hello, {this.state.currentUser.username}!</Text>
-          : <Text style={styles.title}>Loading...</Text>
-        }
+        {this.state.patterns.map(pattern => <Text key={pattern.id}>{pattern.name}</Text>)}
       </View>
     )
   }
