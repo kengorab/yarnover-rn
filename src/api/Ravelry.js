@@ -14,16 +14,17 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   return user
 }
 
-const defaultSearchPatternsRequest = {
-  page: 1,
-  pageSize: 25,
-  hasPhoto: 'yes',
-  sort: 'recently-popular',
-  availability: 'free'
-}
+export async function searchPatterns(request: SearchPatternsRequest) {
+  const defaults = {
+    page: 1,
+    pageSize: 25,
+    hasPhoto: 'yes',
+    sort: 'recently-popular',
+    availability: 'free'
+  }
 
-export async function searchPatterns(request: SearchPatternsRequest = defaultSearchPatternsRequest) {
-  const queryString = getQueryString(request, { hasPhoto: 'photo' }, true)
+  const requestParams = { ...defaults, ...request }
+  const queryString = getQueryString(requestParams, { hasPhoto: 'photo' }, true)
 
   const { paginator, patterns }: PaginatedPatternsResponse = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',

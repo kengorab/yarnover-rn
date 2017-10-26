@@ -3400,6 +3400,10 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-android-snackbar@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-android-snackbar/-/react-native-android-snackbar-0.1.0.tgz#9cf991590f02464319bd8e7d15098616406aad78"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"

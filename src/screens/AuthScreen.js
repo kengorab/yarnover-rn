@@ -55,6 +55,6 @@ const statusBarHeight = Platform.select({ ios: 20 })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Theme.accentColor
+    backgroundColor: Theme.primaryColor
   }
 })

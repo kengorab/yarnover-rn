@@ -32,6 +32,8 @@ export default class OAuthManager {
   }
 
   async makeAuthenticatedRequest({ url, method, headers, body }) {
+    console.log('Making request:', method, url, headers, body)
+
     const { ok, body: resBody, bodyRaw } = await OAuth10Module.makeAuthenticatedRequest(
       this.providerName,
       url,

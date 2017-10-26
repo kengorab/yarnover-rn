@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
-import { ListView, StyleSheet, Text } from 'react-native'
+import { ActivityIndicator, ListView, View } from 'react-native'
+import Snackbar from 'react-native-android-snackbar'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import PatternCard from '../components/PatternCard'
 import Theme from '../theme'
 
 export default class HotRightNowScreen extends Component {
+  currentPage = 0
+  loading = false
+  patterns = []
+
   constructor() {
     super()
 
@@ -13,51 +18,76 @@ export default class HotRightNowScreen extends Component {
     })
 
     this.state = {
-      loading: true,
-      patterns: [],
-      patternDataSource: patternDataSrc.cloneWithRows([]),
-      currentPage: 0
+      patternDataSource: patternDataSrc.cloneWithRows([{ rowType: 'loader' }])
     }
   }
 
   async componentDidMount() {
-    const { patterns } = await Ravelry.searchPatterns()
-    const allPatterns = this.state.patterns.concat(patterns)
+    await this._loadPatternsForPage(1)
+  }
 
-    this.setState({
-      loading: false,
-      patterns: allPatterns,
-      patternDataSource: this.state.patternDataSource.cloneWithRows(allPatterns),
-      currentPage: this.state.currentPage + 1
-    })
+  componentWillUnmount() {
+    Snackbar.dismiss()
+  }
+
+  _loadPatternsForPage = async (pageNum) => {
+    try {
+      this.loading = true
+      const { patterns } = await Ravelry.searchPatterns({ page: pageNum })
+      this.loading = false
+
+      this.currentPage = pageNum
+      this.patterns = this.patterns.concat(patterns)
+
+      const dataSrcRows = this.patterns
+        .map(pattern => ({ rowType: 'pattern', pattern }))
+        .concat({ rowType: 'loader' })
+      const patternDataSource = this.state.patternDataSource.cloneWithRows(dataSrcRows)
+
+      this.setState({ patternDataSource })
+    } catch (e) {
+      this.loading = false
+      console.log(`Error loading patterns for page: ${pageNum}`, e)
+
+      Snackbar.show('Error loading patterns', {
+        duration: Snackbar.INDEFINITE,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._loadPatternsForPage(pageNum)
+      })
+    }
+  }
+
+  _renderRow = ({ rowType, pattern }) => {
+    switch (rowType) {
+      case 'pattern':
+        return <PatternCard pattern={pattern}/>
+      case 'loader':
+      default:
+        return (
+          <View style={{ paddingVertical: 8 }}>
+            <ActivityIndicator color={Theme.accentColor} size="large"/>
+          </View>
+        )
+    }
+  }
+
+  _onEndReached = async () => {
+    if (!this.loading) {
+      const nextPage = this.currentPage + 1
+      console.log(`Loading patterns for page: ${nextPage}`)
+      await this._loadPatternsForPage(nextPage)
+    }
   }
 
   render() {
-    if (this.state.loading) {
-      return <Text style={styles.title}>Loading...</Text>
-    }
-
     return (
       <ListView
         dataSource={this.state.patternDataSource}
-        renderRow={pattern => <PatternCard pattern={pattern}/>}
+        onEndReachedThreshold={1000}
+        renderRow={this._renderRow}
+        onEndReached={this._onEndReached}
       />
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Theme.backgroundColor
-  },
-  title: {
-    fontSize: 36,
-    color: Theme.darkGray,
-    fontFamily: 'sans-serif-light',
-    textAlign: 'center',
-    margin: 10
-  }
-})

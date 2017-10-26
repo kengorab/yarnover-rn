@@ -7,7 +7,7 @@ import Theme from './theme'
 const globalOptions = {
   navigationOptions: {
     headerStyle: {
-      backgroundColor: Theme.accentColor
+      backgroundColor: Theme.primaryColor
     },
     headerTintColor: Theme.headerTextColor,
     headerTitleStyle: {

@@ -1,6 +1,8 @@
 export default {
-  accentColor: '#4FC8B2',
-  accentColorDark: '#3C9C9B',
+  primaryColor: '#4FC8B2',
+  primaryColorDark: '#3C9C9B',
+  accentColor: '#7C4DFF',
+
   headerTextColor: '#FFFFFF',
 
   backgroundColor: '#E9E9EF',

@@ -12,7 +12,7 @@ const PatternCard = ({ pattern }: Props) => {
   const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
 
   return (
-    <Card elevation={1} containerStyle={{ padding: 0 }}>
+    <Card elevation={1} containerStyle={styles.cardContainer}>
       <View style={styles.cardContents}>
         <Image style={styles.thumbnail} source={{ uri: photoUrl }}/>
         <View style={styles.detailsContainer}>
@@ -29,6 +29,11 @@ const PatternCard = ({ pattern }: Props) => {
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    padding: 0,
+    margin: 8,
+    marginBottom: 0
+  },
   cardContents: {
     flex: 1,
     flexDirection: 'row'

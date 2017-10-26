@@ -8,7 +8,7 @@ import Theme from './theme'
 
 const uiTheme = {
   palette: {
-    primaryColor: Theme.accentColor
+    primaryColor: Theme.primaryColor
   }
 }
 

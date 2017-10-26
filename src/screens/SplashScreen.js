@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Theme.accentColor
+    backgroundColor: Theme.primaryColor
   },
   title: {
     fontSize: 36,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginBottom: 36
   },
   loginButtonText: {
-    color: Theme.accentColor
+    color: Theme.primaryColor
   },
   loginButton: {
     padding: 24
