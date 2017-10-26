@@ -13,7 +13,7 @@ export default class PatternAuthor {
     this.name = name
     this.favoritesCount = favorites_count
     this.patternsCount = patterns_count
-    this.users = users
+    this.users = users.map(u => new User(u))
     this.permalink = permalink
   }
 }

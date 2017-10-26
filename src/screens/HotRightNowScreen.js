@@ -1,14 +1,35 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ListView, StyleSheet, Text } from 'react-native'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
+import PatternCard from '../components/PatternCard'
 import Theme from '../theme'
 
 export default class HotRightNowScreen extends Component {
-  state = { loading: true, patterns: [], currentPage: 0 }
+  constructor() {
+    super()
+
+    const patternDataSrc = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    })
+
+    this.state = {
+      loading: true,
+      patterns: [],
+      patternDataSource: patternDataSrc.cloneWithRows([]),
+      currentPage: 0
+    }
+  }
 
   async componentDidMount() {
-    const { paginator, patterns } = await Ravelry.searchPatterns()
-    this.setState({ loading: false, patterns, paginator })
+    const { patterns } = await Ravelry.searchPatterns()
+    const allPatterns = this.state.patterns.concat(patterns)
+
+    this.setState({
+      loading: false,
+      patterns: allPatterns,
+      patternDataSource: this.state.patternDataSource.cloneWithRows(allPatterns),
+      currentPage: this.state.currentPage + 1
+    })
   }
 
   render() {
@@ -17,9 +38,10 @@ export default class HotRightNowScreen extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        {this.state.patterns.map(pattern => <Text key={pattern.id}>{pattern.name}</Text>)}
-      </View>
+      <ListView
+        dataSource={this.state.patternDataSource}
+        renderRow={pattern => <PatternCard pattern={pattern}/>}
+      />
     )
   }
 }

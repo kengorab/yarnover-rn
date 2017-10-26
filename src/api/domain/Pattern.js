@@ -13,8 +13,8 @@ export default class Pattern {
     this.id = id
     this.name = name
     this.permalink = permalink
-    this.firstPhoto = first_photo
-    this.designer = designer
-    this.patternAuthor = pattern_author
+    this.firstPhoto = new Photo(first_photo)
+    this.designer = new PatternAuthor(designer)
+    this.patternAuthor = new PatternAuthor(pattern_author)
   }
 }

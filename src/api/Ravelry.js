@@ -17,7 +17,7 @@ export async function getCurrentUser(): Promise<CurrentUser> {
 const defaultSearchPatternsRequest = {
   page: 1,
   pageSize: 25,
-  hasPhoto: true,
+  hasPhoto: 'yes',
   sort: 'recently-popular',
   availability: 'free'
 }
