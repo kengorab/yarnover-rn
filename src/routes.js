@@ -3,6 +3,7 @@ import AuthScreen from './screens/AuthScreen'
 import HotRightNowScreen from './screens/HotRightNowScreen'
 import SplashScreen from './screens/SplashScreen'
 import Theme from './theme'
+import PatternDetailsScreen from './screens/PatternDetailsScreen'
 
 const globalOptions = {
   navigationOptions: {
@@ -39,7 +40,8 @@ const authScreenConfig = {
 const AuthNavigator = StackNavigator(authScreenConfig, globalOptions)
 
 export const appScreens = {
-  HOT_RIGHT_NOW_SCREEN: 'HotRightNowScreen'
+  HOT_RIGHT_NOW_SCREEN: 'HotRightNowScreen',
+  PATTERN_DETAILS_SCREEN: 'PatternDetailsScreen'
 }
 
 const appScreenConfig = {
@@ -47,6 +49,12 @@ const appScreenConfig = {
     screen: HotRightNowScreen,
     navigationOptions: {
       title: 'Hot Right Now'
+    }
+  },
+  [appScreens.PATTERN_DETAILS_SCREEN]: {
+    screen: PatternDetailsScreen,
+    navigationOptions: {
+      header: null
     }
   }
 }

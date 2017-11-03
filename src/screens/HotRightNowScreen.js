@@ -1,11 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { ActivityIndicator, ListView, View } from 'react-native'
 import Snackbar from 'react-native-android-snackbar'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import PatternCard from '../components/PatternCard'
+import { appScreens } from '../routes'
 import Theme from '../theme'
 
-export default class HotRightNowScreen extends Component {
+export default class HotRightNowScreen extends React.Component {
   currentPage = 0
   loading = false
   patterns = []
@@ -58,10 +59,14 @@ export default class HotRightNowScreen extends Component {
     }
   }
 
+  _onPatternPress = (pattern) => {
+    this.props.navigation.navigate(appScreens.PATTERN_DETAILS_SCREEN, { pattern })
+  }
+
   _renderRow = ({ rowType, pattern }) => {
     switch (rowType) {
       case 'pattern':
-        return <PatternCard pattern={pattern}/>
+        return <PatternCard onPress={() => this._onPatternPress(pattern)} pattern={pattern}/>
       case 'loader':
       default:
         return (

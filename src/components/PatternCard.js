@@ -4,15 +4,16 @@ import Pattern from '../api/domain/Pattern'
 import Card from './Card'
 
 type Props = {
-  pattern: Pattern
+  pattern: Pattern,
+  onPress: () => void
 }
 
-const PatternCard = ({ pattern }: Props) => {
+const PatternCard = ({ pattern, onPress }: Props) => {
   const { name, patternAuthor, firstPhoto } = pattern
   const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
 
   return (
-    <Card elevation={1} containerStyle={styles.cardContainer}>
+    <Card onPress={onPress} elevation={1} containerStyle={styles.cardContainer}>
       <View style={styles.cardContents}>
         <Image style={styles.thumbnail} source={{ uri: photoUrl }}/>
         <View style={styles.detailsContainer}>

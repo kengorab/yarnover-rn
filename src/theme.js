@@ -9,5 +9,7 @@ export default {
   borderColor: '#CCC',
 
   darkGray: '#777',
-  lightGray: '#AAA'
+  lightGray: '#AAA',
+
+  translucentStatusBar: 'rgba(0, 0, 0, 0.25)'
 }

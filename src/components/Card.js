@@ -16,7 +16,7 @@ export default class Card extends React.Component {
     )
 
     return (
-      <Touchable>
+      <Touchable onPress={this.props.onPress}>
         <View style={[styles.container, { elevation }, this.props.containerStyle]}>
           {title}
           {this.props.children}

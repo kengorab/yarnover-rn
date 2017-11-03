@@ -7,7 +7,7 @@ function latency(length) {
 }
 
 export async function searchPatterns(request) {
-  await latency(1000)
+  //await latency(1000)
 
   //if (Math.random() < 0.5) {
   //  throw new Error('wtf')
