@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import Pattern from '../api/domain/Pattern'
+import PatternDetails from '../api/domain/PatternDetails'
+import * as Ravelry from '../api/__mock-api__/Ravelry'
 import CollapsibleSection from '../components/CollapsibleSection'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
 import Theme from '../theme'
@@ -9,14 +11,43 @@ export default class PatternDetailsScreen extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { loading: true, isDetailsSectionOpen: true }
+    this.state = {
+      detailsLoading: true,
+      isDetailsSectionOpen: true,
+      patternDetails: null
+    }
+  }
 
-    setTimeout(() => this.setState({ loading: false }), 2000)
+  async componentWillMount() {
+    const { pattern } = this.props.navigation.state.params
+    const patternDetails = await Ravelry.getPatternById(pattern.id)
+    this.setState({ detailsLoading: false, patternDetails })
   }
 
   _navigateBack = () => this.props.navigation.goBack()
 
-  _renderDetailsSection = (isLoading) => {
+  _detailsTableRows = (patternDetails: PatternDetails) => {
+    const rows = [
+      ['Published In', patternDetails.printings, printings => printings[0].source.name],
+      ['Craft', patternDetails.craft.name],
+      ['Categories', patternDetails.patternCategories, categories => categories.map(({ name }) => name).join(', ')],
+      ['Published', patternDetails.published],
+      ['Yarn Weight', patternDetails.yarnWeightDesc],
+      ['Weight Category', patternDetails.yarnWeight, ({ weight }) => `${weight.weight} (${weight.name})`],
+      ['Gauge', patternDetails.gaugeDesc],
+      ['Needle Sizes', patternDetails.patternNeedleSizes, sizes => sizes.map(({ name }) => name).join('\n')],
+      ['Yardage', patternDetails.yardageDesc]
+    ]
+
+    return rows
+      .map(([name, field, fn]) => [
+        name,
+        field ? (fn ? fn(field) : field) : null
+      ])
+      .filter(([key, value]) => !!value && value.length > 0)
+  }
+
+  _renderDetailsSection = (isLoading: boolean, patternDetails: PatternDetails) => {
     if (isLoading) {
       return (
         <View style={{ paddingVertical: 8 }}>
@@ -25,11 +56,17 @@ export default class PatternDetailsScreen extends Component {
       )
     }
 
+    const detailsTable = this._detailsTableRows(patternDetails)
+      .map(([title, data]) =>
+        <View key={title} style={styles.patternDetailsRow}>
+          <Text style={styles.patternDetailsRowTitleText}>{title}</Text>
+          <Text style={styles.patternDetailsRowText}>{data}</Text>
+        </View>
+      )
+
     return (
-      <View style={styles.titleSectionHeader}>
-        <Text style={styles.name}>
-          Some pattern details go here
-        </Text>
+      <View style={styles.patternDetailsContainer}>
+        {detailsTable}
       </View>
     )
   }
@@ -52,8 +89,11 @@ export default class PatternDetailsScreen extends Component {
         </View>
 
         <CollapsibleSection title="Pattern Details">
-          {this._renderDetailsSection(this.state.loading)}
+          {this._renderDetailsSection(this.state.detailsLoading, this.state.patternDetails)}
         </CollapsibleSection>
+
+        {/* Padding */}
+        <View style={{ height: 96 }}/>
       </ParallaxImageHeaderLayout>
     )
   }
@@ -86,5 +126,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'sans-serif-light',
     fontStyle: 'italic'
+  },
+  patternDetailsContainer: {
+    flex: 1,
+    paddingHorizontal: 32
+  },
+  patternDetailsRow: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginBottom: 4
+  },
+  patternDetailsRowText: {
+    flex: 1,
+    flexWrap: 'wrap'
+  },
+  patternDetailsRowTitleText: {
+    flex: 1,
+    flexWrap: 'wrap',
+    fontWeight: 'bold'
   }
 })

@@ -2,6 +2,7 @@ import { getQueryString } from '../util/url-utils'
 import { oauthManager } from './auth'
 import Paginator from './domain/Paginator'
 import Pattern from './domain/Pattern'
+import PatternDetails from './domain/PatternDetails'
 import type { CurrentUser, PaginatedPatternsResponse, SearchPatternsRequest } from './RavelryTypes'
 
 const apiRoot = 'https://api.ravelry.com'
@@ -37,3 +38,11 @@ export async function searchPatterns(request: SearchPatternsRequest) {
   }
 }
 
+export async function getPatternById(id: number) {
+  const { pattern } = await oauthManager.makeAuthenticatedRequest({
+    method: 'GET',
+    url: `${apiRoot}/patterns/${id}.json?`
+  })
+
+  return new PatternDetails(pattern)
+}

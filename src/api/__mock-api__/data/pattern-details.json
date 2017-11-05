@@ -1,0 +1,261 @@
+{
+  "queued_projects_count": 373,
+  "price": null,
+  "currency_symbol": "$",
+  "packs": [
+    {
+      "dye_lot": null,
+      "id": 8044024,
+      "shop_name": null,
+      "total_grams": null,
+      "yarn_id": 12201,
+      "ounces_per_skein": null,
+      "yarn": {
+        "id": 12201,
+        "name": "Léttlopi",
+        "yarn_company_id": 3273,
+        "permalink": "istex-lettlopi",
+        "yarn_company_name": "Ístex"
+      },
+      "quantity_description": null,
+      "meters_per_skein": null,
+      "grams_per_skein": null,
+      "skeins": null,
+      "color_family_id": null,
+      "colorway": null,
+      "primary_pack_id": null,
+      "total_ounces": null,
+      "stash_id": null,
+      "yarn_name": "Ístex Léttlopi",
+      "project_id": null,
+      "total_meters": null,
+      "personal_name": null,
+      "thread_size": null,
+      "yarn_weight": {
+        "id": 1,
+        "wpi": "8",
+        "crochet_gauge": "",
+        "knit_gauge": "18",
+        "name": "Aran",
+        "max_gauge": null,
+        "ply": "10",
+        "min_gauge": null
+      },
+      "shop_id": null,
+      "total_yards": null,
+      "yards_per_skein": null
+    }
+  ],
+  "projects_count": 198,
+  "product_id": null,
+  "permalink": "hestapeysa-icelandic-sweater-with-horses",
+  "yarn_weight_description": "Aran (8 wpi)",
+  "url": "http://istex.is/english/free-patterns/",
+  "pattern_author": {
+    "id": 2237,
+    "users": [],
+    "permalink": "jhanna-hjaltadttir",
+    "patterns_count": 10,
+    "name": "Jóhanna Hjaltadóttir",
+    "favorites_count": 32
+  },
+  "row_gauge": 24,
+  "download_location": {
+    "url": "http://istex.is/Files/Skra_0036818.pdf",
+    "type": "external"
+  },
+  "pdf_url": "http://istex.is/Files/Skra_0036818.pdf",
+  "pattern_type": {
+    "id": 17,
+    "permalink": "child",
+    "name": "Child"
+  },
+  "favorites_count": 2467,
+  "rating_average": 4.43548387096774,
+  "notes_html": "<p>SWEATER WITH HORSES</p>\n\n<p>SIZES: <br />Children‘s (128 cm) (Women‘s: Men‘s)</p>\n\n<p>Chest: <br />86 (109:119) cm</p>\n\n<p>Length to underarm: <br />48 (67:71) cm</p>\n\n<p>Sleeve length to underarm: <br />31 (44:49) cm</p>\n\n<p>MATERIALS <br />Létt-Lopi ▪ 50 g balls <br />A-0053, acorn heather OR <br />A-0057, grey heather 5 (8:10) <br />B-0051, white 2 (3:3) <br />C-0005, black heather 1 (2:2)</p>\n\n<p>5 mm (US 8) and 3 ½ mm (US 4) circular needles 40 <br />and 80 cm</p>\n\n<p>5 mm (US 8) and 3 ½ mm (US 4) double pointed <br />needles</p>\n\n<p>GAUGE <br />18 sts og 24 rows = 10 x 10 cm measured over St st <br />using 5 mm needles. Check gauge and adjust needle size if necessary.</p>\n\n<p><a href=\"http://istex.is/Files/Skra_0038178.pdf\">English pdf</a> <br /><a href=\"http://istex.is/files/Skra_0036818.pdf\">Icelandic pdf</a> <br /><a href=\"http://istex.is/islenska/uppskriftir/flokkur/friar-uppskriftir/\">Fríar uppskriftir</a></p>",
+  "yardage_description": "872 - 1635 yards",
+  "yarn_weight": {
+    "id": 1,
+    "wpi": "8",
+    "crochet_gauge": "",
+    "knit_gauge": "18",
+    "name": "Aran",
+    "max_gauge": null,
+    "ply": "10",
+    "min_gauge": null
+  },
+  "yardage_max": 1635,
+  "currency": "USD",
+  "photos": [
+    {
+      "caption_html": null,
+      "id": 8939934,
+      "caption": null,
+      "square_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_s.jpg",
+      "thumbnail_url": "h",
+      "copyright_holder": null,
+      "x_offset": -60,
+      "sort_order": 1,
+      "small_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_m.jpg",
+      "medium_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7.jpg",
+      "flickr_url": "http://www.flickr.com/photos/40799608@N00/4118987551",
+      "shelved_url": null,
+      "medium2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_z.jpg",
+      "y_offset": -5,
+      "small2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_n.jpg"
+    },
+    {
+      "caption_html": null,
+      "id": 8940954,
+      "caption": null,
+      "square_url": "https://farm4.static.flickr.com/3242/2685655102_553e974373_s.jpg",
+      "thumbnail_url": "h",
+      "copyright_holder": null,
+      "x_offset": -33,
+      "sort_order": 2,
+      "small_url": "https://farm4.static.flickr.com/3242/2685655102_553e974373_m.jpg",
+      "medium_url": "https://farm4.static.flickr.com/3242/2685655102_553e974373.jpg",
+      "flickr_url": "http://www.flickr.com/photos/28472600@N04/2685655102",
+      "shelved_url": null,
+      "medium2_url": "https://farm4.static.flickr.com/3242/2685655102_553e974373_z.jpg",
+      "y_offset": -3,
+      "small2_url": "https://farm4.static.flickr.com/3242/2685655102_553e974373_n.jpg"
+    }
+  ],
+  "personal_attributes": {
+    "bookmark_id": null
+  },
+  "pattern_needle_sizes": [
+    {
+      "name": "US 4  - 3.5 mm",
+      "metric": 3.5,
+      "id": 4,
+      "us_steel": "00",
+      "us": "4 ",
+      "pretty_metric": "3.5",
+      "hook": "E"
+    },
+    {
+      "name": "US 8  - 5.0 mm",
+      "metric": 5,
+      "id": 8,
+      "us_steel": null,
+      "us": "8 ",
+      "pretty_metric": "5",
+      "hook": "H"
+    }
+  ],
+  "id": 139778,
+  "gauge_description": "18 stitches and 24 rows = 4 inches in stockinette stitch",
+  "sizes_available": "Child, Woman, Man",
+  "rating_count": 62,
+  "printings": [
+    {
+      "pattern_source": {
+        "list_price": null,
+        "id": 7212,
+        "url": "http://www.istex.is",
+        "shelf_image_path": null,
+        "price": null,
+        "author": "Ístex Yarn",
+        "amazon_rating": null,
+        "patterns_count": 39,
+        "permalink": "istex-lopi-website",
+        "name": "Ístex Lopi Website",
+        "amazon_url": null
+      }
+    }
+  ],
+  "difficulty_average": 3.7536231884058,
+  "pattern_categories": [
+    {
+      "id": 306,
+      "permalink": "pullover",
+      "name": "Pullover",
+      "parent": {
+        "id": 319,
+        "permalink": "sweater",
+        "name": "Sweater",
+        "parent": {
+          "id": 302,
+          "permalink": "clothing",
+          "name": "Clothing",
+          "parent": {
+            "id": 301,
+            "permalink": "categories",
+            "name": "Categories"
+          }
+        }
+      }
+    }
+  ],
+  "gauge_divisor": 4,
+  "gauge_pattern": "stockinette stitch",
+  "craft": {
+    "id": 2,
+    "permalink": "knitting",
+    "name": "Knitting"
+  },
+  "name": "Hestapeysa (Icelandic Sweater with Horses)",
+  "published": null,
+  "difficulty_count": 69,
+  "pattern_attributes": [
+    {
+      "id": 3,
+      "permalink": "unisex"
+    },
+    {
+      "id": 8,
+      "permalink": "child"
+    },
+    {
+      "id": 9,
+      "permalink": "teen"
+    },
+    {
+      "id": 10,
+      "permalink": "adult"
+    },
+    {
+      "id": 88,
+      "permalink": "circular-yoke"
+    },
+    {
+      "id": 181,
+      "permalink": "stranded"
+    },
+    {
+      "id": 200,
+      "permalink": "kitchener"
+    },
+    {
+      "id": 205,
+      "permalink": "seamless"
+    },
+    {
+      "id": 212,
+      "permalink": "bottom-up"
+    },
+    {
+      "id": 227,
+      "permalink": "icelandic"
+    },
+    {
+      "id": 265,
+      "permalink": "chart"
+    },
+    {
+      "id": 267,
+      "permalink": "written-pattern"
+    },
+    {
+      "id": 286,
+      "permalink": "in-the-round"
+    }
+  ],
+  "comments_count": 5,
+  "gauge": 18,
+  "notes": "SWEATER WITH HORSES \r\n\r\nSIZES:\r\nChildren‘s (128 cm) (Women‘s: Men‘s)\r\n\r\nChest: \r\n86 (109:119) cm \r\n\r\nLength to underarm:\r\n48 (67:71) cm \r\n\r\nSleeve length to underarm:\r\n31 (44:49) cm \r\n\r\nMATERIALS \r\nLétt-Lopi ▪ 50 g balls \r\nA-0053, acorn heather OR \r\nA-0057, grey heather 5 (8:10) \r\nB-0051, white 2 (3:3) \r\nC-0005, black heather 1 (2:2)\r\n \r\n5 mm (US 8) and 3 ½ mm (US 4) circular needles 40 \r\nand 80 cm  \r\n\r\n5 mm (US 8) and 3 ½ mm (US 4) double pointed \r\nneedles \r\n\r\nGAUGE \r\n18 sts og 24 rows = 10 x 10 cm measured over St st \r\nusing 5 mm needles. Check gauge and adjust needle size if necessary. \r\n\r\n[English pdf][1]\r\n[Icelandic pdf][2]\r\n[Fríar uppskriftir][3]\r\n\r\n\r\n  [1]: http://istex.is/Files/Skra_0038178.pdf\r\n  [2]: http://istex.is/files/Skra_0036818.pdf\r\n  [3]: http://istex.is/islenska/uppskriftir/flokkur/friar-uppskriftir/",
+  "yardage": 872,
+  "volumes_in_library": []
+}
