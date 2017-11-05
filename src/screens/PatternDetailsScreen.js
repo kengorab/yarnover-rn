@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
 import PatternDetails from '../api/domain/PatternDetails'
-import * as Ravelry from '../api/__mock-api__/Ravelry'
 import CollapsibleSection from '../components/CollapsibleSection'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
+import Touchable from '../components/Touchable'
 import Theme from '../theme'
 
 export default class PatternDetailsScreen extends Component {
@@ -47,15 +48,7 @@ export default class PatternDetailsScreen extends Component {
       .filter(([key, value]) => !!value && value.length > 0)
   }
 
-  _renderDetailsSection = (isLoading: boolean, patternDetails: PatternDetails) => {
-    if (isLoading) {
-      return (
-        <View style={{ paddingVertical: 8 }}>
-          <ActivityIndicator color={Theme.accentColor} size="large"/>
-        </View>
-      )
-    }
-
+  _renderDetailsSection = (patternDetails: PatternDetails) => {
     const detailsTable = this._detailsTableRows(patternDetails)
       .map(([title, data]) =>
         <View key={title} style={styles.patternDetailsRow}>
@@ -71,11 +64,33 @@ export default class PatternDetailsScreen extends Component {
     )
   }
 
+  _renderPhotosSection = (patternDetails: PatternDetails) =>
+    <ScrollView horizontal={true} style={{ padding: 16 }}>
+      {patternDetails.photos.map(photo =>
+        <Touchable key={photo.id}>
+          <Image
+            style={{ width: 200, height: 200, marginHorizontal: 8 }}
+            source={{ uri: photo.mediumUrl || photo.medium2Url || photo.squareUrl }}
+          />
+        </Touchable>
+      )}
+    </ScrollView>
+
   render() {
     const pattern: Pattern = this.props.navigation.state.params.pattern
 
     const { firstPhoto } = pattern
     const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
+
+    const renderContents = () =>
+      <View style={{ paddingBottom: 96 }}>
+        <CollapsibleSection title="Pattern Details">
+          {this._renderDetailsSection(this.state.patternDetails)}
+        </CollapsibleSection>
+        <CollapsibleSection title="Photos" initOpen={false}>
+          {this._renderPhotosSection(this.state.patternDetails)}
+        </CollapsibleSection>
+      </View>
 
     return (
       <ParallaxImageHeaderLayout imageSource={{ uri: photoUrl }} onNavigateBack={this._navigateBack}>
@@ -88,12 +103,14 @@ export default class PatternDetailsScreen extends Component {
           </Text>
         </View>
 
-        <CollapsibleSection title="Pattern Details">
-          {this._renderDetailsSection(this.state.detailsLoading, this.state.patternDetails)}
-        </CollapsibleSection>
-
-        {/* Padding */}
-        <View style={{ height: 96 }}/>
+        {this.state.detailsLoading
+          ? (
+            <View style={{ paddingVertical: 8 }}>
+              <ActivityIndicator color={Theme.accentColor} size="large"/>
+            </View>
+          )
+          : renderContents()
+        }
       </ParallaxImageHeaderLayout>
     )
   }
