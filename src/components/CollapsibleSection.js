@@ -5,8 +5,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Touchable from './Touchable'
 
 export default class CollapsibleSection extends React.Component {
-  animRotation = new Animated.Value(0)
-  state = { open: true }
+  constructor(props) {
+    super(props)
+
+    const initiallyOpen = props.initOpen === undefined ? true : props.initOpen
+
+    this.animRotation = new Animated.Value(initiallyOpen ? 0 : 1)
+    this.state = { open: initiallyOpen }
+  }
 
   render() {
     const pressHandler = () => {
