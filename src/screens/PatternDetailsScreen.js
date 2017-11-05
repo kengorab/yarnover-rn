@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
@@ -6,9 +6,10 @@ import PatternDetails from '../api/domain/PatternDetails'
 import CollapsibleSection from '../components/CollapsibleSection'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
 import Touchable from '../components/Touchable'
+import { appScreens } from '../routes'
 import Theme from '../theme'
 
-export default class PatternDetailsScreen extends Component {
+export default class PatternDetailsScreen extends React.Component {
   constructor(props) {
     super(props)
 
@@ -26,6 +27,9 @@ export default class PatternDetailsScreen extends Component {
   }
 
   _navigateBack = () => this.props.navigation.goBack()
+
+  _navigateToPhotosViewer = (activePhotoIndex, allPhotos) =>
+    this.props.navigation.navigate(appScreens.PHOTO_VIEW_SCREEN, { activePhotoIndex, allPhotos })
 
   _detailsTableRows = (patternDetails: PatternDetails) => {
     const rows = [
@@ -66,11 +70,11 @@ export default class PatternDetailsScreen extends Component {
 
   _renderPhotosSection = (patternDetails: PatternDetails) =>
     <ScrollView horizontal={true} style={{ padding: 16 }}>
-      {patternDetails.photos.map(photo =>
-        <Touchable key={photo.id}>
+      {patternDetails.photos.map((photo, i) =>
+        <Touchable key={i} onPress={() => this._navigateToPhotosViewer(i, patternDetails.photos)}>
           <Image
             style={{ width: 200, height: 200, marginHorizontal: 8 }}
-            source={{ uri: photo.mediumUrl || photo.medium2Url || photo.squareUrl }}
+            source={{ uri: photo.photoUrl }}
           />
         </Touchable>
       )}

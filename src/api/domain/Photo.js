@@ -22,4 +22,8 @@ export default class Photo {
     this.mediumUrl = medium_url
     this.medium2Url = medium2_url
   }
+
+  get photoUrl() {
+    return this.mediumUrl || this.medium2Url || this.squareUrl
+  }
 }

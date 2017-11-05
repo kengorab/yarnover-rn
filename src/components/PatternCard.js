@@ -10,12 +10,11 @@ type Props = {
 
 const PatternCard = ({ pattern, onPress }: Props) => {
   const { name, patternAuthor, firstPhoto } = pattern
-  const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
 
   return (
     <Card onPress={onPress} elevation={1} containerStyle={styles.cardContainer}>
       <View style={styles.cardContents}>
-        <Image style={styles.thumbnail} source={{ uri: photoUrl }}/>
+        <Image style={styles.thumbnail} source={{ uri: firstPhoto.photoUrl }}/>
         <View style={styles.detailsContainer}>
           <Text style={styles.name} ellipsizeMode="tail" numberOfLines={1}>
             {name}

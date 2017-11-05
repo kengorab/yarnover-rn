@@ -1,9 +1,10 @@
 import { StackNavigator } from 'react-navigation'
 import AuthScreen from './screens/AuthScreen'
 import HotRightNowScreen from './screens/HotRightNowScreen'
+import PatternDetailsScreen from './screens/PatternDetailsScreen'
 import SplashScreen from './screens/SplashScreen'
 import Theme from './theme'
-import PatternDetailsScreen from './screens/PatternDetailsScreen'
+import PhotoViewScreen from './screens/PhotoViewScreen'
 
 const globalOptions = {
   navigationOptions: {
@@ -41,7 +42,8 @@ const AuthNavigator = StackNavigator(authScreenConfig, globalOptions)
 
 export const appScreens = {
   HOT_RIGHT_NOW_SCREEN: 'HotRightNowScreen',
-  PATTERN_DETAILS_SCREEN: 'PatternDetailsScreen'
+  PATTERN_DETAILS_SCREEN: 'PatternDetailsScreen',
+  PHOTO_VIEW_SCREEN: 'PhotoViewScreen'
 }
 
 const appScreenConfig = {
@@ -53,6 +55,12 @@ const appScreenConfig = {
   },
   [appScreens.PATTERN_DETAILS_SCREEN]: {
     screen: PatternDetailsScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  [appScreens.PHOTO_VIEW_SCREEN]: {
+    screen: PhotoViewScreen,
     navigationOptions: {
       header: null
     }

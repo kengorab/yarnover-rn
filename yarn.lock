@@ -3439,6 +3439,12 @@ react-native-material-ui@^1.14.0:
     prop-types "^15.5.10"
     react-native-material-design-styles "^0.2.6"
 
+react-native-photo-view@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/react-native-photo-view/-/react-native-photo-view-1.5.2.tgz#5d7f406ed5532a5a8a78c8ef8f40e81f688de1e2"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-restart@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/react-native-restart/-/react-native-restart-0.0.4.tgz#e742c2f9833592214147bb39321d2cd5d172ad8c"
