@@ -16,6 +16,12 @@ just plain React for this one.
 - Authentication / API Calls: See "Auth" section below
 - Types: Flow (though these are used very sparingly, really only to provide some type-safety when using the Ravelry API)
 
+## TODO
+Typically in projects, I like to keep a `TODO.md` file, keeping track of everything that's left to do. This time, I
+gave it a shot using Trello.
+
+[Link to the Trello Board for Yarnover](https://trello.com/b/YiglbWxE/yarnover)
+
 ## Note on OAuth
 
 I need to perform oauth (1.0a) with the Ravelry API in order to make this app. For the original native Kotlin app, I
