@@ -1,12 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
-
-const Touchable = ({ children, onPress }) =>
-  <TouchableNativeFeedback
-    onPress={onPress}
-    background={TouchableNativeFeedback.SelectableBackground()}>
-    {children}
-  </TouchableNativeFeedback>
+import { StyleSheet, Text, View } from 'react-native'
+import Touchable from './Touchable'
 
 export default class Card extends React.Component {
   render() {
