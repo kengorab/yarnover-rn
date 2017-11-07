@@ -4,6 +4,10 @@ import PatternDetails from '../domain/PatternDetails'
 import patternDetailsJson from './data/pattern-details.json'
 import searchPatternsJson from './data/search-patterns.json'
 
+export async function getCurrentUser() {
+  return { username: 'mock-username' }
+}
+
 export async function searchPatterns(request) {
   const { patterns, paginator } = searchPatternsJson
   return {
