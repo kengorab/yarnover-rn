@@ -3,7 +3,9 @@ import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 're
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
 import PatternDetails from '../api/domain/PatternDetails'
+import PersonalAttributes from '../api/domain/PersonalAttributes'
 import CollapsibleSection from '../components/CollapsibleSection'
+import ImageButton from '../components/ImageButton'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
 import Touchable from '../components/Touchable'
 import { appScreens } from '../routes'
@@ -80,6 +82,18 @@ export default class PatternDetailsScreen extends React.Component {
       )}
     </ScrollView>
 
+  _addToFavorites = async (patternId) => {
+
+  }
+
+  _renderQuickActionsSection = (personalAttributes: PersonalAttributes) =>
+    <View style={styles.quickActionsContainer}>
+      {personalAttributes.isFavorite && personalAttributes.bookmarkId
+        ? <ImageButton image="favorite" title="Remove from Favorites"/>
+        : <ImageButton image="favorite-border" title="Add to Favorites"/>
+      }
+    </View>
+
   render() {
     const pattern: Pattern = this.props.navigation.state.params.pattern
 
@@ -105,6 +119,11 @@ export default class PatternDetailsScreen extends React.Component {
           <Text style={styles.author} ellipsizeMode="tail" numberOfLines={1}>
             {pattern.patternAuthor.name}
           </Text>
+
+          {this.state.detailsLoading
+            ? null
+            : this._renderQuickActionsSection(this.state.patternDetails.personalAttributes)
+          }
         </View>
 
         {this.state.detailsLoading
@@ -122,8 +141,7 @@ export default class PatternDetailsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   titleSectionHeader: {
-    paddingHorizontal: 8,
-    paddingVertical: 16,
+    paddingTop: 16,
     borderBottomColor: '#cfcfcf',
     borderBottomWidth: 1
   },
@@ -141,12 +159,21 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontFamily: 'sans-serif-light'
+    fontFamily: 'sans-serif-light',
+    paddingHorizontal: 8
   },
   author: {
     fontSize: 12,
     fontFamily: 'sans-serif-light',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
+    paddingHorizontal: 8,
+    marginBottom: 8
+  },
+  quickActionsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   patternDetailsContainer: {
     flex: 1,
