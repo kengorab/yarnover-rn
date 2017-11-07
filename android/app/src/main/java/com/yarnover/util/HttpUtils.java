@@ -47,6 +47,13 @@ public class HttpUtils {
             return res;
         }
 
+        if (jsonString.trim().isEmpty()) {
+            Log.i(TAG, "Response returned no JSON; returning with null body and null bodyRaw");
+            res.putNull("body");
+            res.putNull("bodyRaw");
+            return res;
+        }
+
         try {
             JSONObject json = new JSONObject(jsonString);
             WritableMap responseBody = JSONUtils.jsonToReact(json);

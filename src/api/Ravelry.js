@@ -41,8 +41,28 @@ export async function searchPatterns(request: SearchPatternsRequest) {
 export async function getPatternById(id: number) {
   const { pattern } = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',
-    url: `${apiRoot}/patterns/${id}.json?`
+    url: `${apiRoot}/patterns/${id}.json`
   })
 
   return new PatternDetails(pattern)
+}
+
+export async function addToFavorites(username: string, patternId: number) {
+  const bookmarkId = await oauthManager.makeAuthenticatedRequest({
+    method: 'POST',
+    url: `${apiRoot}/people/${username}/favorites/create.json`,
+    body: {
+      'favorited_id': patternId,
+      'type': 'pattern'
+    }
+  })
+
+  return { bookmarkId }
+}
+
+export async function removeFromFavorites(username: string, bookmarkId: number) {
+  await oauthManager.makeAuthenticatedRequest({
+    method: 'DELETE',
+    url: `${apiRoot}/people/${username}/favorites/${bookmarkId}.json`
+  })
 }

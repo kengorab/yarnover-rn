@@ -8,6 +8,7 @@ import CollapsibleSection from '../components/CollapsibleSection'
 import ImageButton from '../components/ImageButton'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
 import Touchable from '../components/Touchable'
+import * as StorageManager from '../manager/StorageManager'
 import { appScreens } from '../routes'
 import Theme from '../theme'
 
@@ -18,14 +19,25 @@ export default class PatternDetailsScreen extends React.Component {
     this.state = {
       detailsLoading: true,
       isDetailsSectionOpen: true,
-      patternDetails: null
+      patternDetails: null,
+      personalAttributes: null,
+      username: null
     }
   }
 
   async componentWillMount() {
     const { pattern } = this.props.navigation.state.params
-    const patternDetails = await Ravelry.getPatternById(pattern.id)
-    this.setState({ detailsLoading: false, patternDetails })
+    const [patternDetails, username] = await Promise.all([
+      Ravelry.getPatternById(pattern.id),
+      StorageManager.getUsername()
+    ])
+
+    this.setState({
+      detailsLoading: false,
+      patternDetails,
+      personalAttributes: patternDetails.personalAttributes,
+      username
+    })
   }
 
   _navigateBack = () => this.props.navigation.goBack()
@@ -82,22 +94,45 @@ export default class PatternDetailsScreen extends React.Component {
       )}
     </ScrollView>
 
-  _addToFavorites = async (patternId) => {
-
+  _addToFavorites = async (patternId, username) => {
+    const { bookmarkId } = await Ravelry.addToFavorites(username, patternId)
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isFavorite: true,
+        bookmarkId
+      }
+    })
   }
 
-  _renderQuickActionsSection = (personalAttributes: PersonalAttributes) =>
-    <View style={styles.quickActionsContainer}>
-      {personalAttributes.isFavorite && personalAttributes.bookmarkId
-        ? <ImageButton image="favorite" title="Remove from Favorites"/>
-        : <ImageButton image="favorite-border" title="Add to Favorites"/>
+  _removeFromFavorites = async (patternId, username) => {
+    await Ravelry.removeFromFavorites(username, patternId)
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isFavorite: false,
+        bookmarkId: null
       }
-    </View>
+    })
+  }
+
+  _renderQuickActionsSection = (patternId: number, username: string, personalAttributes: PersonalAttributes) => {
+    const favoritesButton = personalAttributes.isFavorite && personalAttributes.bookmarkId
+      ? <ImageButton image="favorite" title="Remove from Favorites"
+                     onPress={() => this._removeFromFavorites(personalAttributes.bookmarkId, username)}/>
+      : <ImageButton image="favorite-border" title="Add to Favorites"
+                     onPress={() => this._addToFavorites(patternId, username)}/>
+    return (
+      <View style={styles.quickActionsContainer}>
+        {favoritesButton}
+      </View>
+    )
+  }
 
   render() {
     const pattern: Pattern = this.props.navigation.state.params.pattern
 
-    const { firstPhoto } = pattern
+    const { id: patternId, firstPhoto } = pattern
     const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
 
     const renderContents = () =>
@@ -122,7 +157,11 @@ export default class PatternDetailsScreen extends React.Component {
 
           {this.state.detailsLoading
             ? null
-            : this._renderQuickActionsSection(this.state.patternDetails.personalAttributes)
+            : this._renderQuickActionsSection(
+              patternId,
+              this.state.username,
+              this.state.personalAttributes
+            )
           }
         </View>
 

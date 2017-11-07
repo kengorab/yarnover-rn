@@ -19,3 +19,11 @@ export async function searchPatterns(request) {
 export async function getPatternById(id) {
   return new PatternDetails(patternDetailsJson)
 }
+
+export async function addToFavorites(username: string, patternId: number) {
+  return { bookmarkId: patternId }
+}
+
+export async function removeFromFavorites(username: string, bookmarkId: number) {
+
+}
