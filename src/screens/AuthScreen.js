@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Platform, StyleSheet, View, WebView } from 'react-native'
 import * as RNRestart from 'react-native-restart'
+import * as Ravelry from '../api/__mock-api__/Ravelry'
 import * as Auth from '../api/auth'
 import { callbackUrl } from '../api/config'
 import * as StorageManager from '../manager/StorageManager'
@@ -31,7 +32,14 @@ export default class AuthScreen extends Component {
 
     const { oauth_verifier } = UrlUtils.getQueryParams(url)
     Auth.oauthManager.getAccessToken(oauth_verifier)
-      .then(({ token, tokenSecret }) => StorageManager.saveAccessTokenAndSecret(token, tokenSecret))
+      .then(({ token, tokenSecret }) => {
+        return Promise.all([
+          StorageManager.saveAccessTokenAndSecret(token, tokenSecret),
+          Ravelry.getCurrentUser().then(({ username }) =>
+            StorageManager.saveUsername(username)
+          )
+        ])
+      })
       .then(this._restartApp)
   }
 
