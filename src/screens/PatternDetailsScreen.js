@@ -116,15 +116,50 @@ export default class PatternDetailsScreen extends React.Component {
     })
   }
 
-  _renderQuickActionsSection = (patternId: number, username: string, personalAttributes: PersonalAttributes) => {
+  _addToLibrary = async (patternId) => {
+    await Ravelry.addToLibrary(patternId)
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isInLibrary: true
+      }
+    })
+  }
+
+  _removeFromLibrary = async (username, patternName) => {
+    const { paginator, volumes } = await Ravelry.searchLibrary(username, { query: patternName })
+    if (paginator.pageCount === 0) {
+      console.log('Error! Retry!')
+      return
+    }
+
+    const [patternVolume] = volumes
+    await Ravelry.removeFromLibrary(patternVolume.id)
+
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isInLibrary: false
+      }
+    })
+  }
+
+  _renderQuickActionsSection = (pattern: Pattern, username: string, personalAttributes: PersonalAttributes) => {
     const favoritesButton = personalAttributes.isFavorite && personalAttributes.bookmarkId
       ? <ImageButton image="favorite" title="Remove from Favorites"
                      onPress={() => this._removeFromFavorites(personalAttributes.bookmarkId, username)}/>
       : <ImageButton image="favorite-border" title="Add to Favorites"
-                     onPress={() => this._addToFavorites(patternId, username)}/>
+                     onPress={() => this._addToFavorites(pattern.id, username)}/>
+
+    const libraryButton = personalAttributes.isInLibrary
+      ? <ImageButton image="remove-circle" title="Remove from Library"
+                     onPress={() => this._removeFromLibrary(username, pattern.name)}/>
+      : <ImageButton image="library-add" title="Add to Library"
+                     onPress={() => this._addToLibrary(pattern.id)}/>
     return (
       <View style={styles.quickActionsContainer}>
         {favoritesButton}
+        {libraryButton}
       </View>
     )
   }
@@ -132,7 +167,7 @@ export default class PatternDetailsScreen extends React.Component {
   render() {
     const pattern: Pattern = this.props.navigation.state.params.pattern
 
-    const { id: patternId, firstPhoto } = pattern
+    const { firstPhoto } = pattern
     const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
 
     const renderContents = () =>
@@ -158,7 +193,7 @@ export default class PatternDetailsScreen extends React.Component {
           {this.state.detailsLoading
             ? null
             : this._renderQuickActionsSection(
-              patternId,
+              pattern,
               this.state.username,
               this.state.personalAttributes
             )

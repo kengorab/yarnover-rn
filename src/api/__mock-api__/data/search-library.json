@@ -1,0 +1,34 @@
+{
+  "paginator": {
+    "results": 1,
+    "page_size": 25,
+    "last_page": 1,
+    "page_count": 1,
+    "page": 1
+  },
+  "volumes": [
+    {
+      "cover_image_url": null,
+      "cover_image_size": null,
+      "small_image_url": null,
+      "square_image_url": "http://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_s.jpg",
+      "title": "Hestapeysa (Icelandic Sweater with Horses)",
+      "first_photo": {
+        "x_offset": -60,
+        "medium2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_z.jpg",
+        "y_offset": -5,
+        "small2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_n.jpg",
+        "square_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_s.jpg",
+        "medium_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7.jpg",
+        "thumbnail_url": "h",
+        "small_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_m.jpg"
+      },
+      "patterns_count": 1,
+      "author_name": "Jóhanna Hjaltadóttir",
+      "pattern_id": 139778,
+      "id": 218695108,
+      "has_downloads": false,
+      "pattern_source_id": null
+    }
+  ]
+}

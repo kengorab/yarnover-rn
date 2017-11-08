@@ -3,7 +3,13 @@ import { oauthManager } from './auth'
 import Paginator from './domain/Paginator'
 import Pattern from './domain/Pattern'
 import PatternDetails from './domain/PatternDetails'
-import type { CurrentUser, PaginatedPatternsResponse, SearchPatternsRequest } from './RavelryTypes'
+import VolumeDetails from './domain/VolumeDetails'
+import type {
+  CurrentUser,
+  PaginatedPatternsResponse,
+  SearchLibraryRequest,
+  SearchPatternsRequest
+} from './RavelryTypes'
 
 const apiRoot = 'https://api.ravelry.com'
 
@@ -64,5 +70,45 @@ export async function removeFromFavorites(username: string, bookmarkId: number) 
   await oauthManager.makeAuthenticatedRequest({
     method: 'DELETE',
     url: `${apiRoot}/people/${username}/favorites/${bookmarkId}.json`
+  })
+}
+
+export async function searchLibrary(username: string, request: SearchLibraryRequest) {
+  const defaults = {
+    query: null,
+    queryType: 'patterns',
+    type: 'pattern',
+    sort: 'best',
+    page: 1,
+    pageSize: 25
+  }
+
+  const requestParams = { ...defaults, ...request }
+  const queryString = getQueryString(requestParams, {}, true)
+  const { paginator, volumes }: PaginatedPatternsResponse = await oauthManager.makeAuthenticatedRequest({
+    method: 'GET',
+    url: `${apiRoot}/people/${username}/library/search.json?${queryString}`
+  })
+
+  return {
+    paginator: new Paginator(paginator),
+    volumes: volumes.map(v => new VolumeDetails(v))
+  }
+}
+
+export async function addToLibrary(patternId: number) {
+  await oauthManager.makeAuthenticatedRequest({
+    method: 'POST',
+    url: `${apiRoot}/volumes/create.json`,
+    body: {
+      'pattern_id': patternId
+    }
+  })
+}
+
+export async function removeFromLibrary(patternVolumeId: number) {
+  await oauthManager.makeAuthenticatedRequest({
+    method: 'DELETE',
+    url: `${apiRoot}/volumes/${patternVolumeId}.json`
   })
 }

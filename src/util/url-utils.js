@@ -15,6 +15,7 @@ export function getQueryParams(url) {
  */
 export function getQueryString(queryParams, remappings = {}, snakeCaseify = true) {
   return Object.entries(queryParams)
+    .filter(([key, val]) => !!val)
     .map(([key, val]) => [remappings[key] || (snakeCaseify ? snakeCase(key) : key), val])
     .map(([key, val]) => `${key}=${val}`).join('&')
 }

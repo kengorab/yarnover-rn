@@ -26,6 +26,17 @@ export type Availability
   | 'ravelry'
   | 'library'
 
+export type LibraryQueryType
+  = 'patterns'
+  | 'tags'
+
+export type LibrarySourceType
+  = 'book'
+  | 'magazine'
+  | 'booklet'
+  | 'pattern'
+  | 'pdf'
+
 // Domain objects without classes (others are defined as classes in the api/domain dir)
 
 export type CurrentUser = {
@@ -33,6 +44,15 @@ export type CurrentUser = {
 }
 
 // Request/Response types
+
+export type SearchLibraryRequest = {
+  query: string | null,
+  queryType: LibraryQueryType,
+  type: LibrarySourceType,
+  sort: SortOrder,
+  page: number,
+  pageSize: number
+}
 
 export type SearchPatternsRequest = {
   page: number,
