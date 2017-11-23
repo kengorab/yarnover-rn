@@ -1,9 +1,9 @@
 import React from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
 import PatternDetails from '../api/domain/PatternDetails'
 import PersonalAttributes from '../api/domain/PersonalAttributes'
-import * as Ravelry from '../api/Ravelry'
 import CollapsibleSection from '../components/CollapsibleSection'
 import ImageButton from '../components/ImageButton'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
@@ -21,7 +21,11 @@ export default class PatternDetailsScreen extends React.Component {
       isDetailsSectionOpen: true,
       patternDetails: null,
       personalAttributes: null,
-      username: null
+      username: null,
+
+      favoritesInProgress: false,
+      libraryInProgress: false,
+      queueInProgress: false
     }
   }
 
@@ -95,106 +99,162 @@ export default class PatternDetailsScreen extends React.Component {
     </ScrollView>
 
   _addToFavorites = async (username, patternId) => {
-    const { bookmarkId } = await Ravelry.addToFavorites(username, patternId)
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isFavorite: true,
-        bookmarkId
-      }
-    })
+    try {
+      this.setState({ favoritesInProgress: true })
+      const { bookmarkId } = await Ravelry.addToFavorites(username, patternId)
+      this.setState({
+        favoritesInProgress: false,
+        personalAttributes: {
+          ...this.state.personalAttributes,
+          isFavorite: true,
+          bookmarkId
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while adding pattern ${patternId} to favorites`, e)
+      this.setState({ favoritesInProgress: false })
+    }
   }
 
   _removeFromFavorites = async (username, patternId) => {
-    await Ravelry.removeFromFavorites(username, patternId)
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isFavorite: false,
-        bookmarkId: null
-      }
-    })
+    try {
+      this.setState({ favoritesInProgress: true })
+      await Ravelry.removeFromFavorites(username, patternId)
+      this.setState({
+        favoritesInProgress: false,
+        personalAttributes: {
+          ...this.state.personalAttributes,
+          isFavorite: false,
+          bookmarkId: null
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while removing pattern ${patternId} from favorites`, e)
+      this.setState({ favoritesInProgress: false })
+    }
   }
 
   _addToLibrary = async (patternId) => {
-    await Ravelry.addToLibrary(patternId)
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isInLibrary: true
-      }
-    })
+    try {
+      this.setState({ libraryInProgress: true })
+      await Ravelry.addToLibrary(patternId)
+      this.setState({
+        libraryInProgress: false,
+        personalAttributes: {
+          ...this.state.personalAttributes,
+          isInLibrary: true
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while adding pattern ${patternId} to library`, e)
+      this.setState({ libraryInProgress: false })
+    }
   }
 
   _removeFromLibrary = async (username, patternName) => {
-    const { paginator, volumes } = await Ravelry.searchLibrary(username, { query: patternName })
-    if (paginator.pageCount === 0) {
-      console.log('Error! Retry!')
-      return
-    }
-
-    const [patternVolume] = volumes
-    await Ravelry.removeFromLibrary(patternVolume.id)
-
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isInLibrary: false
+    try {
+      this.setState({ libraryInProgress: true })
+      const { paginator, volumes } = await Ravelry.searchLibrary(username, { query: patternName })
+      if (paginator.pageCount === 0) {
+        console.log('Error! Retry!')
+        this.setState({ libraryInProgress: false })
+        return
       }
-    })
+
+      const [patternVolume] = volumes
+      await Ravelry.removeFromLibrary(patternVolume.id)
+
+      this.setState({
+        personalAttributes: {
+          libraryInProgress: false,
+          ...this.state.personalAttributes,
+          isInLibrary: false
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while removing pattern ${patternName} from library`, e)
+      this.setState({ libraryInProgress: false })
+    }
   }
 
   _addToQueue = async (username, patternId) => {
-    await Ravelry.addToQueue(username, patternId)
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isQueued: true
-      }
-    })
+    try {
+      this.setState({ queueInProgress: true })
+      await Ravelry.addToQueue(username, patternId)
+      this.setState({
+        queueInProgress: false,
+        personalAttributes: {
+          ...this.state.personalAttributes,
+          isQueued: true
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while adding pattern ${patternId} to queue`, e)
+      this.setState({ queueInProgress: false })
+    }
   }
 
   _removeFromQueue = async (username, patternId) => {
-    const { paginator, queuedProjects } = await Ravelry.searchQueue(username, { patternId })
-    if (paginator.pageCount === 0) {
-      console.log('Error! Retry!')
-      return
-    }
-
-    const [queuedProject] = queuedProjects
-    await Ravelry.removeFromQueue(username, queuedProject.id)
-    this.setState({
-      personalAttributes: {
-        ...this.state.personalAttributes,
-        isQueued: false
+    try {
+      this.setState({ queueInProgress: true })
+      const { paginator, queuedProjects } = await Ravelry.searchQueue(username, { patternId })
+      if (paginator.pageCount === 0) {
+        console.log('Error! Retry!')
+        this.setState({ queueInProgress: false })
+        return
       }
-    })
+
+      const [queuedProject] = queuedProjects
+      await Ravelry.removeFromQueue(username, queuedProject.id)
+      this.setState({
+        personalAttributes: {
+          queueInProgress: false,
+          ...this.state.personalAttributes,
+          isQueued: false
+        }
+      })
+    } catch (e) {
+      console.log(`Error occurred while removing pattern ${patternId} from queue`, e)
+      this.setState({ queueInProgress: false })
+    }
   }
 
   _renderQuickActionsSection = (pattern: Pattern, username: string, personalAttributes: PersonalAttributes) => {
-    const favoritesButton = personalAttributes.isFavorite && personalAttributes.bookmarkId
-      ? <ImageButton image="favorite" title="Remove from Favorites"
-                     onPress={() => this._removeFromFavorites(username, personalAttributes.bookmarkId)}/>
-      : <ImageButton image="favorite-border" title="Add to Favorites"
-                     onPress={() => this._addToFavorites(username, pattern.id)}/>
+    const isFavorite = personalAttributes.isFavorite && personalAttributes.bookmarkId
+    const btnFavorites = {
+      disabled: this.state.favoritesInProgress,
+      image: isFavorite ? 'favorite' : 'favorite-border',
+      title: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+      onPress: isFavorite
+        ? () => this._removeFromFavorites(username, personalAttributes.bookmarkId)
+        : () => this._addToFavorites(username, pattern.id)
+    }
 
-    const libraryButton = personalAttributes.isInLibrary
-      ? <ImageButton image="remove-circle" title="Remove from Library"
-                     onPress={() => this._removeFromLibrary(username, pattern.name)}/>
-      : <ImageButton image="library-add" title="Add to Library"
-                     onPress={() => this._addToLibrary(pattern.id)}/>
+    const isInLibrary = personalAttributes.isInLibrary
+    const btnLibrary = {
+      disabled: this.state.libraryInProgress,
+      image: isInLibrary ? 'remove-circle' : 'library-add',
+      title: isInLibrary ? 'Remove from Library' : 'Add to Library',
+      onPress: isInLibrary
+        ? () => this._removeFromLibrary(username, pattern.name)
+        : () => this._addToLibrary(pattern.id)
+    }
 
-    const queueButton = personalAttributes.isQueued
-      ? <ImageButton image="remove-circle" title="Remove from Queue"
-                     onPress={() => this._removeFromQueue(username, pattern.id)}/>
-      : <ImageButton image="playlist-add" title="Add to Queue"
-                     onPress={() => this._addToQueue(username, pattern.id)}/>
+    const isInQueue = personalAttributes.isQueued
+    const btnQueue = {
+      disabled: this.state.queueInProgress,
+      image: isInQueue ? 'remove-circle' : 'playlist-add',
+      title: isInQueue ? 'Remove from Queue' : 'Add to Queue',
+      onPress: isInQueue
+        ? () => this._removeFromQueue(username, pattern.id)
+        : () => this._addToQueue(username, pattern.id)
+    }
 
     return (
       <View style={styles.quickActionsContainer}>
-        {favoritesButton}
-        {libraryButton}
-        {queueButton}
+        <ImageButton {...btnFavorites}/>
+        <ImageButton {...btnLibrary}/>
+        <ImageButton {...btnQueue}/>
       </View>
     )
   }
