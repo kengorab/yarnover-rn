@@ -1,9 +1,11 @@
 import React from 'react'
 import { TouchableNativeFeedback } from 'react-native'
 
-const Touchable = ({ children, onPress }) =>
+const noop = () => null
+
+const Touchable = ({ children, onPress, disabled = false }) =>
   <TouchableNativeFeedback
-    onPress={onPress}
+    onPress={disabled ? noop : onPress}
     background={TouchableNativeFeedback.SelectableBackground()}>
     {children}
   </TouchableNativeFeedback>
