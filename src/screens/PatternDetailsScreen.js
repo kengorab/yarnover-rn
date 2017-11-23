@@ -104,7 +104,7 @@ export default class PatternDetailsScreen extends React.Component {
       )}
     </ScrollView>
 
-  _addToFavorites = async (username, patternId) => {
+  _addToFavorites = async (username, patternId, retries = 0) => {
     try {
       this.setState({ favoritesInProgress: true })
       const { bookmarkId } = await Ravelry.addToFavorites(username, patternId)
@@ -120,11 +120,22 @@ export default class PatternDetailsScreen extends React.Component {
       Snackbar.show('Added to Favorites!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to favorites`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error adding to favorites...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToFavorites(username, patternId, retries + 1)
+      })
       this.setState({ favoritesInProgress: false })
     }
   }
 
-  _removeFromFavorites = async (username, bookmarkId, patternId) => {
+  _removeFromFavorites = async (username, bookmarkId, patternId, retries = 0) => {
     try {
       this.setState({ favoritesInProgress: true })
       await Ravelry.removeFromFavorites(username, bookmarkId)
@@ -145,11 +156,22 @@ export default class PatternDetailsScreen extends React.Component {
       })
     } catch (e) {
       console.log(`Error occurred while removing bookmark ${bookmarkId} from favorites`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error removing from favorites...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._removeFromFavorites(username, bookmarkId, patternId, retries + 1)
+      })
       this.setState({ favoritesInProgress: false })
     }
   }
 
-  _addToLibrary = async (patternId) => {
+  _addToLibrary = async (patternId, retries = 0) => {
     try {
       this.setState({ libraryInProgress: true })
       await Ravelry.addToLibrary(patternId)
@@ -164,17 +186,35 @@ export default class PatternDetailsScreen extends React.Component {
       Snackbar.show('Added to Library!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to library`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error adding to library...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToLibrary(patternId, retries + 1)
+      })
       this.setState({ libraryInProgress: false })
     }
   }
 
-  _removeFromLibrary = async (username, patternName, patternId) => {
+  _removeFromLibrary = async (username, patternName, patternId, retries = 0) => {
     try {
       this.setState({ libraryInProgress: true })
       const { paginator, volumes } = await Ravelry.searchLibrary(username, { query: patternName })
       if (paginator.pageCount === 0) {
-        console.log('Error! Retry!')
-        this.setState({ libraryInProgress: false })
+        console.log(`Remove from library: No patterns found for name: ${patternName}`)
+        this.setState({
+          libraryInProgress: false,
+          personalAttributes: {
+            ...this.state.personalAttributes,
+            isInLibrary: false
+          }
+        })
+
         return
       }
 
@@ -197,11 +237,22 @@ export default class PatternDetailsScreen extends React.Component {
       })
     } catch (e) {
       console.log(`Error occurred while removing pattern ${patternName} from library`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error removing from library...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._removeFromLibrary(username, patternName, patternId, retries + 1)
+      })
       this.setState({ libraryInProgress: false })
     }
   }
 
-  _addToQueue = async (username, patternId) => {
+  _addToQueue = async (username, patternId, retries = 0) => {
     try {
       this.setState({ queueInProgress: true })
       await Ravelry.addToQueue(username, patternId)
@@ -216,17 +267,35 @@ export default class PatternDetailsScreen extends React.Component {
       Snackbar.show('Added to Queue!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to queue`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error adding to queue...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToQueue(username, patternId, retries + 1)
+      })
       this.setState({ queueInProgress: false })
     }
   }
 
-  _removeFromQueue = async (username, patternId) => {
+  _removeFromQueue = async (username, patternId, retries = 0) => {
     try {
       this.setState({ queueInProgress: true })
       const { paginator, queuedProjects } = await Ravelry.searchQueue(username, { patternId })
       if (paginator.pageCount === 0) {
-        console.log('Error! Retry!')
-        this.setState({ queueInProgress: false })
+        console.log(`Remove from queue: No patterns found for id: ${patternId}`)
+        this.setState({
+          queueInProgress: false,
+          personalAttributes: {
+            ...this.state.personalAttributes,
+            isQueued: false
+          }
+        })
+
         return
       }
 
@@ -248,6 +317,17 @@ export default class PatternDetailsScreen extends React.Component {
       })
     } catch (e) {
       console.log(`Error occurred while removing pattern ${patternId} from queue`, e)
+      if (retries > 2) {
+        Snackbar.show(`Something's going wrong, please try again later`, { duration: Snackbar.LONG })
+        return
+      }
+
+      Snackbar.show('Error removing from queue...', {
+        duration: Snackbar.LONG,
+        actionLabel: 'RETRY',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._removeFromQueue(username, patternId, retries + 1)
+      })
       this.setState({ queueInProgress: false })
     }
   }
