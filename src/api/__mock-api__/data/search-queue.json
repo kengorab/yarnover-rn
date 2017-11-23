@@ -1,0 +1,45 @@
+{
+  "paginator": {
+    "page_size": 25,
+    "last_page": 1,
+    "page_count": 1,
+    "page": 1,
+    "results": 1
+  },
+  "queued_projects": [
+    {
+      "name": "Hestapeysa (Icelandic Sweater with Horses) by Jóhanna Hjaltadóttir",
+      "make_for": null,
+      "yarn_name": null,
+      "short_pattern_name": "Hestapeysa (Icelandic Sweater with Horses)",
+      "pattern_author_name": "Jóhanna Hjaltadóttir",
+      "created_at": "2017/11/22 19:55:18 -0500",
+      "id": 50526589,
+      "start_on": null,
+      "sort_order": 2,
+      "yarn_id": null,
+      "notes": null,
+      "skeins": null,
+      "pattern_author_id": 2237,
+      "pattern_id": 139778,
+      "user_id": 7049359,
+      "position_in_queue": 2,
+      "pattern_name": "Hestapeysa (Icelandic Sweater with Horses) by Jóhanna Hjaltadóttir",
+      "best_photo": {
+        "medium2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_z.jpg",
+        "small_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_m.jpg",
+        "y_offset": -5,
+        "id": 8939934,
+        "small2_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_n.jpg",
+        "square_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7_s.jpg",
+        "x_offset": -60,
+        "sort_order": 1,
+        "caption": null,
+        "medium_url": "https://farm3.static.flickr.com/2549/4118987551_e38bd9ccf7.jpg",
+        "caption_html": null,
+        "thumbnail_url": "h",
+        "copyright_holder": null
+      }
+    }
+  ]
+}

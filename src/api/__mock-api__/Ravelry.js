@@ -1,6 +1,7 @@
 import Paginator from '../domain/Paginator'
 import Pattern from '../domain/Pattern'
 import PatternDetails from '../domain/PatternDetails'
+import QueuedProjectDetails from '../domain/QueuedProjectDetails'
 import VolumeDetails from '../domain/VolumeDetails'
 import type {
   PaginatedPatternsResponse,
@@ -12,6 +13,7 @@ import type {
 import patternDetailsJson from './data/pattern-details.json'
 import searchLibraryJson from './data/search-library.json'
 import searchPatternsJson from './data/search-patterns.json'
+import searchQueueJson from './data/search-queue.json'
 
 export async function getCurrentUser() {
   return { username: 'mock-username' }
@@ -61,5 +63,13 @@ export async function addToQueue(username: string, patternId: number) {
 }
 
 export async function searchQueue(username: string, request: SearchQueueRequest): Promise<PaginatedQueueResponse> {
+  const { paginator, queued_projects } = searchQueueJson
+  return {
+    paginator: new Paginator(paginator),
+    queuedProjects: queued_projects.map(p => new QueuedProjectDetails(p))
+  }
+}
+
+export async function removeFromQueue(username: string, queuedProjectId: number) {
 
 }
