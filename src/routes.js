@@ -4,17 +4,10 @@ import HotRightNowScreen from './screens/HotRightNowScreen'
 import PatternDetailsScreen from './screens/PatternDetailsScreen'
 import PhotoViewScreen from './screens/PhotoViewScreen'
 import SplashScreen from './screens/SplashScreen'
-import Theme from './theme'
 
 const globalOptions = {
   navigationOptions: {
-    headerStyle: {
-      backgroundColor: Theme.primaryColor
-    },
-    headerTintColor: Theme.headerTextColor,
-    headerTitleStyle: {
-      fontFamily: 'sans-serif-light'
-    }
+    header: null
   }
 }
 
@@ -25,16 +18,10 @@ export const authScreens = {
 
 const authScreenConfig = {
   [authScreens.SPLASH_SCREEN]: {
-    screen: SplashScreen,
-    navigationOptions: {
-      header: null
-    }
+    screen: SplashScreen
   },
   [authScreens.AUTH_SCREEN]: {
-    screen: AuthScreen,
-    navigationOptions: {
-      header: null
-    }
+    screen: AuthScreen
   }
 }
 
@@ -48,23 +35,13 @@ export const appScreens = {
 
 const appScreenConfig = {
   [appScreens.HOT_RIGHT_NOW_SCREEN]: {
-    screen: HotRightNowScreen,
-    navigationOptions: {
-      header: null,
-      //title: 'Hot Right Now'
-    }
+    screen: HotRightNowScreen
   },
   [appScreens.PATTERN_DETAILS_SCREEN]: {
-    screen: PatternDetailsScreen,
-    navigationOptions: {
-      header: null
-    }
+    screen: PatternDetailsScreen
   },
   [appScreens.PHOTO_VIEW_SCREEN]: {
-    screen: PhotoViewScreen,
-    navigationOptions: {
-      header: null
-    }
+    screen: PhotoViewScreen
   }
 }
 
