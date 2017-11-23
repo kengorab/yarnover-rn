@@ -2,6 +2,7 @@
 
 import Paginator from './domain/Paginator'
 import Pattern from './domain/Pattern'
+import QueuedProjectDetails from './domain/QueuedProjectDetails'
 
 // Enums
 
@@ -62,8 +63,21 @@ export type SearchPatternsRequest = {
   availability: Availability
 }
 
+export type SearchQueueRequest = {
+  patternId: number | null,
+  query: string | null,
+  queryType: LibraryQueryType,
+  page: number,
+  pageSize: number
+}
+
 export type PaginatedPatternsResponse = {
   paginator: Paginator,
   patterns: Pattern[]
+}
+
+export type PaginatedQueueResponse = {
+  paginator: Paginator,
+  queuedProjects: QueuedProjectDetails[]
 }
 

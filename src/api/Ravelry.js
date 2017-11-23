@@ -3,12 +3,15 @@ import { oauthManager } from './auth'
 import Paginator from './domain/Paginator'
 import Pattern from './domain/Pattern'
 import PatternDetails from './domain/PatternDetails'
+import QueuedProjectDetails from './domain/QueuedProjectDetails'
 import VolumeDetails from './domain/VolumeDetails'
 import type {
   CurrentUser,
   PaginatedPatternsResponse,
+  PaginatedQueueResponse,
   SearchLibraryRequest,
-  SearchPatternsRequest
+  SearchPatternsRequest,
+  SearchQueueRequest
 } from './RavelryTypes'
 
 const apiRoot = 'https://api.ravelry.com'
@@ -21,7 +24,7 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   return user
 }
 
-export async function searchPatterns(request: SearchPatternsRequest) {
+export async function searchPatterns(request: SearchPatternsRequest): Promise<PaginatedPatternsResponse> {
   const defaults = {
     page: 1,
     pageSize: 25,
@@ -33,7 +36,7 @@ export async function searchPatterns(request: SearchPatternsRequest) {
   const requestParams = { ...defaults, ...request }
   const queryString = getQueryString(requestParams, { hasPhoto: 'photo' }, true)
 
-  const { paginator, patterns }: PaginatedPatternsResponse = await oauthManager.makeAuthenticatedRequest({
+  const { paginator, patterns } = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',
     url: `${apiRoot}/patterns/search.json?${queryString}`
   })
@@ -44,7 +47,7 @@ export async function searchPatterns(request: SearchPatternsRequest) {
   }
 }
 
-export async function getPatternById(id: number) {
+export async function getPatternById(id: number): Promise<PatternDetails> {
   const { pattern } = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',
     url: `${apiRoot}/patterns/${id}.json`
@@ -53,8 +56,8 @@ export async function getPatternById(id: number) {
   return new PatternDetails(pattern)
 }
 
-export async function addToFavorites(username: string, patternId: number) {
-  const bookmarkId = await oauthManager.makeAuthenticatedRequest({
+export async function addToFavorites(username: string, patternId: number): Promise<{ bookmarkId: number }> {
+  const { bookmark } = await oauthManager.makeAuthenticatedRequest({
     method: 'POST',
     url: `${apiRoot}/people/${username}/favorites/create.json`,
     body: {
@@ -63,7 +66,7 @@ export async function addToFavorites(username: string, patternId: number) {
     }
   })
 
-  return { bookmarkId }
+  return { bookmarkId: bookmark.id }
 }
 
 export async function removeFromFavorites(username: string, bookmarkId: number) {
@@ -73,7 +76,10 @@ export async function removeFromFavorites(username: string, bookmarkId: number) 
   })
 }
 
-export async function searchLibrary(username: string, request: SearchLibraryRequest) {
+export async function searchLibrary(
+  username: string,
+  request: SearchLibraryRequest
+): Promise<PaginatedPatternsResponse> {
   const defaults = {
     query: null,
     queryType: 'patterns',
@@ -85,7 +91,7 @@ export async function searchLibrary(username: string, request: SearchLibraryRequ
 
   const requestParams = { ...defaults, ...request }
   const queryString = getQueryString(requestParams, {}, true)
-  const { paginator, volumes }: PaginatedPatternsResponse = await oauthManager.makeAuthenticatedRequest({
+  const { paginator, volumes } = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',
     url: `${apiRoot}/people/${username}/library/search.json?${queryString}`
   })
@@ -110,5 +116,44 @@ export async function removeFromLibrary(patternVolumeId: number) {
   await oauthManager.makeAuthenticatedRequest({
     method: 'DELETE',
     url: `${apiRoot}/volumes/${patternVolumeId}.json`
+  })
+}
+
+export async function addToQueue(username: string, patternId: number) {
+  await oauthManager.makeAuthenticatedRequest({
+    method: 'POST',
+    url: `${apiRoot}/people/${username}/queue/create.json`,
+    body: {
+      'pattern_id': patternId
+    }
+  })
+}
+
+export async function searchQueue(username: string, request: SearchQueueRequest): Promise<PaginatedQueueResponse> {
+  const defaults = {
+    patternId: null,
+    query: null,
+    queryType: 'patterns',
+    page: 1,
+    pageSize: 25
+  }
+
+  const requestParams = { ...defaults, ...request }
+  const queryString = getQueryString(requestParams, {}, true)
+  const { paginator, queued_projects } = await oauthManager.makeAuthenticatedRequest({
+    method: 'GET',
+    url: `${apiRoot}/people/${username}/queue/list.json?${queryString}`
+  })
+
+  return {
+    paginator: new Paginator(paginator),
+    queuedProjects: queued_projects.map(p => new QueuedProjectDetails(p))
+  }
+}
+
+export async function removeFromQueue(username: string, queuedProjectId: number) {
+  await oauthManager.makeAuthenticatedRequest({
+    method: 'DELETE',
+    url: `${apiRoot}/people/${username}/queue/${queuedProjectId}.json`
   })
 }

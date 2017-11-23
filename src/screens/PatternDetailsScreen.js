@@ -1,9 +1,9 @@
 import React from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
 import PatternDetails from '../api/domain/PatternDetails'
 import PersonalAttributes from '../api/domain/PersonalAttributes'
+import * as Ravelry from '../api/Ravelry'
 import CollapsibleSection from '../components/CollapsibleSection'
 import ImageButton from '../components/ImageButton'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
@@ -94,7 +94,7 @@ export default class PatternDetailsScreen extends React.Component {
       )}
     </ScrollView>
 
-  _addToFavorites = async (patternId, username) => {
+  _addToFavorites = async (username, patternId) => {
     const { bookmarkId } = await Ravelry.addToFavorites(username, patternId)
     this.setState({
       personalAttributes: {
@@ -105,7 +105,7 @@ export default class PatternDetailsScreen extends React.Component {
     })
   }
 
-  _removeFromFavorites = async (patternId, username) => {
+  _removeFromFavorites = async (username, patternId) => {
     await Ravelry.removeFromFavorites(username, patternId)
     this.setState({
       personalAttributes: {
@@ -144,22 +144,57 @@ export default class PatternDetailsScreen extends React.Component {
     })
   }
 
+  _addToQueue = async (username, patternId) => {
+    await Ravelry.addToQueue(username, patternId)
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isQueued: true
+      }
+    })
+  }
+
+  _removeFromQueue = async (username, patternId) => {
+    const { paginator, queuedProjects } = await Ravelry.searchQueue(username, { patternId })
+    if (paginator.pageCount === 0) {
+      console.log('Error! Retry!')
+      return
+    }
+
+    const [queuedProject] = queuedProjects
+    await Ravelry.removeFromQueue(username, queuedProject.id)
+    this.setState({
+      personalAttributes: {
+        ...this.state.personalAttributes,
+        isQueued: false
+      }
+    })
+  }
+
   _renderQuickActionsSection = (pattern: Pattern, username: string, personalAttributes: PersonalAttributes) => {
     const favoritesButton = personalAttributes.isFavorite && personalAttributes.bookmarkId
       ? <ImageButton image="favorite" title="Remove from Favorites"
-                     onPress={() => this._removeFromFavorites(personalAttributes.bookmarkId, username)}/>
+                     onPress={() => this._removeFromFavorites(username, personalAttributes.bookmarkId)}/>
       : <ImageButton image="favorite-border" title="Add to Favorites"
-                     onPress={() => this._addToFavorites(pattern.id, username)}/>
+                     onPress={() => this._addToFavorites(username, pattern.id)}/>
 
     const libraryButton = personalAttributes.isInLibrary
       ? <ImageButton image="remove-circle" title="Remove from Library"
                      onPress={() => this._removeFromLibrary(username, pattern.name)}/>
       : <ImageButton image="library-add" title="Add to Library"
                      onPress={() => this._addToLibrary(pattern.id)}/>
+
+    const queueButton = personalAttributes.isQueued
+      ? <ImageButton image="remove-circle" title="Remove from Queue"
+                     onPress={() => this._removeFromQueue(username, pattern.id)}/>
+      : <ImageButton image="playlist-add" title="Add to Queue"
+                     onPress={() => this._addToQueue(username, pattern.id)}/>
+
     return (
       <View style={styles.quickActionsContainer}>
         {favoritesButton}
         {libraryButton}
+        {queueButton}
       </View>
     )
   }
