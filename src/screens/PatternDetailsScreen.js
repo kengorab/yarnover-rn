@@ -1,5 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import Snackbar from 'react-native-android-snackbar'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import Pattern from '../api/domain/Pattern'
 import PatternDetails from '../api/domain/PatternDetails'
@@ -42,6 +43,11 @@ export default class PatternDetailsScreen extends React.Component {
       personalAttributes: patternDetails.personalAttributes,
       username
     })
+  }
+
+  componentWillUnmount() {
+    // In case of any residual snackbars when this screen is closed
+    Snackbar.dismiss()
   }
 
   _navigateBack = () => this.props.navigation.goBack()
@@ -110,16 +116,18 @@ export default class PatternDetailsScreen extends React.Component {
           bookmarkId
         }
       })
+
+      Snackbar.show('Added to Favorites!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to favorites`, e)
       this.setState({ favoritesInProgress: false })
     }
   }
 
-  _removeFromFavorites = async (username, patternId) => {
+  _removeFromFavorites = async (username, bookmarkId, patternId) => {
     try {
       this.setState({ favoritesInProgress: true })
-      await Ravelry.removeFromFavorites(username, patternId)
+      await Ravelry.removeFromFavorites(username, bookmarkId)
       this.setState({
         favoritesInProgress: false,
         personalAttributes: {
@@ -128,8 +136,15 @@ export default class PatternDetailsScreen extends React.Component {
           bookmarkId: null
         }
       })
+
+      Snackbar.show('Removed from Favorites', {
+        duration: Snackbar.LONG,
+        actionLabel: 'UNDO',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToFavorites(username, patternId)
+      })
     } catch (e) {
-      console.log(`Error occurred while removing pattern ${patternId} from favorites`, e)
+      console.log(`Error occurred while removing bookmark ${bookmarkId} from favorites`, e)
       this.setState({ favoritesInProgress: false })
     }
   }
@@ -145,13 +160,15 @@ export default class PatternDetailsScreen extends React.Component {
           isInLibrary: true
         }
       })
+
+      Snackbar.show('Added to Library!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to library`, e)
       this.setState({ libraryInProgress: false })
     }
   }
 
-  _removeFromLibrary = async (username, patternName) => {
+  _removeFromLibrary = async (username, patternName, patternId) => {
     try {
       this.setState({ libraryInProgress: true })
       const { paginator, volumes } = await Ravelry.searchLibrary(username, { query: patternName })
@@ -165,11 +182,18 @@ export default class PatternDetailsScreen extends React.Component {
       await Ravelry.removeFromLibrary(patternVolume.id)
 
       this.setState({
+        libraryInProgress: false,
         personalAttributes: {
-          libraryInProgress: false,
           ...this.state.personalAttributes,
           isInLibrary: false
         }
+      })
+
+      Snackbar.show('Removed from Library', {
+        duration: Snackbar.LONG,
+        actionLabel: 'UNDO',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToLibrary(patternId)
       })
     } catch (e) {
       console.log(`Error occurred while removing pattern ${patternName} from library`, e)
@@ -188,6 +212,8 @@ export default class PatternDetailsScreen extends React.Component {
           isQueued: true
         }
       })
+
+      Snackbar.show('Added to Queue!', { duration: Snackbar.SHORT })
     } catch (e) {
       console.log(`Error occurred while adding pattern ${patternId} to queue`, e)
       this.setState({ queueInProgress: false })
@@ -207,11 +233,18 @@ export default class PatternDetailsScreen extends React.Component {
       const [queuedProject] = queuedProjects
       await Ravelry.removeFromQueue(username, queuedProject.id)
       this.setState({
+        queueInProgress: false,
         personalAttributes: {
-          queueInProgress: false,
           ...this.state.personalAttributes,
           isQueued: false
         }
+      })
+
+      Snackbar.show('Removed from Queue', {
+        duration: Snackbar.LONG,
+        actionLabel: 'UNDO',
+        actionColor: Theme.primaryColor,
+        actionCallback: async () => await this._addToQueue(username, patternId)
       })
     } catch (e) {
       console.log(`Error occurred while removing pattern ${patternId} from queue`, e)
@@ -226,7 +259,7 @@ export default class PatternDetailsScreen extends React.Component {
       image: isFavorite ? 'favorite' : 'favorite-border',
       title: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
       onPress: isFavorite
-        ? () => this._removeFromFavorites(username, personalAttributes.bookmarkId)
+        ? () => this._removeFromFavorites(username, personalAttributes.bookmarkId, pattern.id)
         : () => this._addToFavorites(username, pattern.id)
     }
 
@@ -236,7 +269,7 @@ export default class PatternDetailsScreen extends React.Component {
       image: isInLibrary ? 'remove-circle' : 'library-add',
       title: isInLibrary ? 'Remove from Library' : 'Add to Library',
       onPress: isInLibrary
-        ? () => this._removeFromLibrary(username, pattern.name)
+        ? () => this._removeFromLibrary(username, pattern.name, pattern.id)
         : () => this._addToLibrary(pattern.id)
     }
 
