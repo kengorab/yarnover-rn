@@ -2,9 +2,9 @@ import { StackNavigator } from 'react-navigation'
 import AuthScreen from './screens/AuthScreen'
 import HotRightNowScreen from './screens/HotRightNowScreen'
 import PatternDetailsScreen from './screens/PatternDetailsScreen'
+import PhotoViewScreen from './screens/PhotoViewScreen'
 import SplashScreen from './screens/SplashScreen'
 import Theme from './theme'
-import PhotoViewScreen from './screens/PhotoViewScreen'
 
 const globalOptions = {
   navigationOptions: {
@@ -50,7 +50,8 @@ const appScreenConfig = {
   [appScreens.HOT_RIGHT_NOW_SCREEN]: {
     screen: HotRightNowScreen,
     navigationOptions: {
-      title: 'Hot Right Now'
+      header: null,
+      //title: 'Hot Right Now'
     }
   },
   [appScreens.PATTERN_DETAILS_SCREEN]: {

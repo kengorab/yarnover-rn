@@ -13,7 +13,7 @@ function Yarnover() {
     ),
     android: (
       <View style={{ flex: 1 }}>
-        <StatusBar backgroundColor={Theme.primaryColorDark}/>
+        <StatusBar translucent backgroundColor={Theme.primaryColorDark}/>
         <App/>
       </View>
     )

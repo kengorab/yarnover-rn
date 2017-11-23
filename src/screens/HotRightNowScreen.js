@@ -1,6 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, ListView, View } from 'react-native'
 import Snackbar from 'react-native-android-snackbar'
+import { Toolbar } from 'react-native-material-ui'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import PatternCard from '../components/PatternCard'
 import { appScreens } from '../routes'
@@ -87,12 +88,16 @@ export default class HotRightNowScreen extends React.Component {
 
   render() {
     return (
-      <ListView
-        dataSource={this.state.patternDataSource}
-        onEndReachedThreshold={1000}
-        renderRow={this._renderRow}
-        onEndReached={this._onEndReached}
-      />
+      <View>
+        <Toolbar centerElement="Hot Right Now"/>
+
+        <ListView
+          dataSource={this.state.patternDataSource}
+          onEndReachedThreshold={1000}
+          renderRow={this._renderRow}
+          onEndReached={this._onEndReached}
+        />
+      </View>
     )
   }
 }

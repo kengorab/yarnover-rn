@@ -9,6 +9,14 @@ import Theme from './theme'
 const uiTheme = {
   palette: {
     primaryColor: Theme.primaryColor
+  },
+  toolbar: {
+    titleText: {
+      fontFamily: 'sans-serif-light'
+    },
+    container: {
+      marginTop: 24
+    }
   }
 }
 
