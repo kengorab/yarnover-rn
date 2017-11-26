@@ -1,5 +1,4 @@
 import React from 'react'
-import { Text, View } from 'react-native'
 import { NavigationComponent } from 'react-native-material-bottom-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { StackNavigator, TabNavigator } from 'react-navigation'
@@ -7,6 +6,7 @@ import AuthScreen from './screens/AuthScreen'
 import HotRightNowScreen from './screens/HotRightNowScreen'
 import PatternDetailsScreen from './screens/PatternDetailsScreen'
 import PhotoViewScreen from './screens/PhotoViewScreen'
+import SearchScreen from './screens/SearchScreen'
 import SplashScreen from './screens/SplashScreen'
 import Theme from './theme'
 
@@ -56,16 +56,17 @@ const hotRightNowNavigatorConfig = {
 const HotRightNowNavigatorConfig = StackNavigator(hotRightNowNavigatorConfig, globalOptions)
 
 const AppNavigator = TabNavigator({
+  // TODO: Put this tab second; it's only first for ease of devopment
+  Search: {
+    screen: SearchScreen,
+    navigationOptions: {
+      tabBarLabel: 'Search'
+    }
+  },
   HotRightNow: {
     screen: HotRightNowNavigatorConfig,
     navigationOptions: {
       tabBarLabel: 'Hot Right Now'
-    }
-  },
-  Search: {
-    screen: () => <View><Text>Search</Text></View>,
-    navigationOptions: {
-      tabBarLabel: 'Search'
     }
   }
 }, {
@@ -96,6 +97,6 @@ const AppNavigator = TabNavigator({
 
 export default {
   AuthNavigator,
-  AppNavigator: HotRightNowNavigatorConfig
+  AppNavigator
 }
 
