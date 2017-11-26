@@ -1,11 +1,12 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
 
 export default class SearchScreen extends React.Component {
   state = {
     searching: false,
-    searchText: ''
+    searchText: '',
+    searchResults: null
   }
 
   _enterSearch = () => this.setState({ searching: true })
@@ -19,9 +20,16 @@ export default class SearchScreen extends React.Component {
     return this.state.searchText || 'Search Patterns'
   }
 
+  _renderZeroState = () =>
+    <View style={styles.zeroStateContainer}>
+      <Text style={styles.zeroStateText}>
+        Search for pattern keywords (like "cabled hat" or "comfy socks") using the search icon above.
+      </Text>
+    </View>
+
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <Toolbar
           searchable={{
             onSearchPressed: this._enterSearch,
@@ -34,8 +42,19 @@ export default class SearchScreen extends React.Component {
           isSearchActive={this.state.searching}
           centerElement={this._getToolbarTitle()}
         />
-        <Text>{this.state.searchText}</Text>
+        {!this.state.searchResults && !this.state.searching && this._renderZeroState()}
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  zeroStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24
+  },
+  zeroStateText: {
+    textAlign: 'center'
+  }
+})
