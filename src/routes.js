@@ -1,9 +1,14 @@
-import { StackNavigator } from 'react-navigation'
+import React from 'react'
+import { Text, View } from 'react-native'
+import { NavigationComponent } from 'react-native-material-bottom-navigation'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { StackNavigator, TabNavigator } from 'react-navigation'
 import AuthScreen from './screens/AuthScreen'
 import HotRightNowScreen from './screens/HotRightNowScreen'
 import PatternDetailsScreen from './screens/PatternDetailsScreen'
 import PhotoViewScreen from './screens/PhotoViewScreen'
 import SplashScreen from './screens/SplashScreen'
+import Theme from './theme'
 
 const globalOptions = {
   navigationOptions: {
@@ -33,7 +38,10 @@ export const appScreens = {
   PHOTO_VIEW_SCREEN: 'PhotoViewScreen'
 }
 
-const appScreenConfig = {
+// Represents the "Hot Right Now" subsection of the app (in addition to nested screens within that subsection). These
+// screens (such as the PatternDetailsScreen and the PhotoViewScreen) will likely be used in other subsections of the
+// app.
+const hotRightNowNavigatorConfig = {
   [appScreens.HOT_RIGHT_NOW_SCREEN]: {
     screen: HotRightNowScreen
   },
@@ -45,10 +53,49 @@ const appScreenConfig = {
   }
 }
 
-const AppNavigator = StackNavigator(appScreenConfig, globalOptions)
+const HotRightNowNavigatorConfig = StackNavigator(hotRightNowNavigatorConfig, globalOptions)
+
+const AppNavigator = TabNavigator({
+  HotRightNow: {
+    screen: HotRightNowNavigatorConfig,
+    navigationOptions: {
+      tabBarLabel: 'Hot Right Now'
+    }
+  },
+  Search: {
+    screen: () => <View><Text>Search</Text></View>,
+    navigationOptions: {
+      tabBarLabel: 'Search'
+    }
+  }
+}, {
+  tabBarPosition: 'bottom',
+  tabBarComponent: NavigationComponent,
+  swipeEnabled: false,
+  backBehavior: 'none',
+  tabBarOptions: {
+    bottomNavigationOptions: {
+      rippleColor: Theme.primaryColor,
+      barBackgroundColor: 'white',
+      style: { borderTopWidth: 1, borderTopColor: '#eeedee' },
+      labelColor: '#686668',
+      activeLabelColor: Theme.primaryColor,
+      tabs: {
+        HotRightNow: {
+          icon: <Icon size={20} color="#686668" name="whatshot"/>,
+          activeIcon: <Icon size={20} color={Theme.primaryColor} name="whatshot"/>
+        },
+        Search: {
+          icon: <Icon size={20} color="#686668" name="search"/>,
+          activeIcon: <Icon size={20} color={Theme.primaryColor} name="search"/>
+        }
+      }
+    }
+  }
+})
 
 export default {
   AuthNavigator,
-  AppNavigator
+  AppNavigator: HotRightNowNavigatorConfig
 }
 
