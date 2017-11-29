@@ -26,6 +26,7 @@ export async function getCurrentUser(): Promise<CurrentUser> {
 
 export async function searchPatterns(request: SearchPatternsRequest): Promise<PaginatedPatternsResponse> {
   const defaults = {
+    query: null,
     page: 1,
     pageSize: 25,
     hasPhoto: 'yes',

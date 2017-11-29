@@ -56,6 +56,7 @@ export type SearchLibraryRequest = {
 }
 
 export type SearchPatternsRequest = {
+  query: string,
   page: number,
   pageSize: number,
   hasPhoto: boolean,

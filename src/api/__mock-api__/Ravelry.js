@@ -21,6 +21,17 @@ export async function getCurrentUser() {
 
 export async function searchPatterns(request: SearchPatternsRequest): Promise<PaginatedPatternsResponse> {
   const { patterns, paginator } = searchPatternsJson
+
+  if (request.pageSize) {
+    const modifiedPatterns = [...patterns]
+    modifiedPatterns.splice(request.pageSize - modifiedPatterns.length)
+
+    return {
+      paginator: new Paginator({ ...paginator, page_size: request.pageSize }),
+      patterns: modifiedPatterns.map(p => new Pattern(p))
+    }
+  }
+
   return {
     paginator: new Paginator(paginator),
     patterns: patterns.map(p => new Pattern(p))

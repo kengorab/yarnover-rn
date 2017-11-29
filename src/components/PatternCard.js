@@ -5,14 +5,18 @@ import Card from './Card'
 
 type Props = {
   pattern: Pattern,
-  onPress: () => void
+  onPress: () => void,
+  size: 'normal' | 'small',
+  style: {}
 }
 
-const PatternCard = ({ pattern, onPress }: Props) => {
+const PatternCard = ({ pattern, onPress, size = 'normal', style = {} }: Props) => {
   const { name, patternAuthor, firstPhoto } = pattern
 
+  const styles = size === 'normal' ? stylesNormal : stylesSmall
+
   return (
-    <Card onPress={onPress} elevation={1} containerStyle={styles.cardContainer}>
+    <Card onPress={onPress} elevation={1} containerStyle={[styles.cardContainer, style]}>
       <View style={styles.cardContents}>
         <Image style={styles.thumbnail} source={{ uri: firstPhoto.photoUrl }}/>
         <View style={styles.detailsContainer}>
@@ -28,12 +32,20 @@ const PatternCard = ({ pattern, onPress }: Props) => {
   )
 }
 
-const styles = StyleSheet.create({
+const stylesCommon = {
   cardContainer: {
     padding: 0,
     margin: 8,
     marginBottom: 0
   },
+  detailsContainer: {
+    flex: 1,
+    padding: 8
+  }
+}
+
+const stylesNormal = StyleSheet.create({
+  ...stylesCommon,
   cardContents: {
     flex: 1,
     flexDirection: 'row'
@@ -42,16 +54,33 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100
   },
-  detailsContainer: {
-    flex: 1,
-    padding: 8
-  },
   name: {
     fontSize: 16,
     fontFamily: 'sans-serif-light'
   },
   author: {
     fontSize: 12,
+    fontFamily: 'sans-serif-light',
+    fontStyle: 'italic'
+  }
+})
+
+const stylesSmall = StyleSheet.create({
+  ...stylesCommon,
+  cardContents: {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  thumbnail: {
+    flex: 1,
+    height: 100
+  },
+  name: {
+    fontSize: 14,
+    fontFamily: 'sans-serif-light'
+  },
+  author: {
+    fontSize: 10,
     fontFamily: 'sans-serif-light',
     fontStyle: 'italic'
   }
