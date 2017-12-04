@@ -100,7 +100,14 @@ export default class SearchScreen extends React.Component {
   _renderRow = ({ rowType, pattern }) => {
     switch (rowType) {
       case 'pattern':
-        return <PatternCard size="small" onPress={() => null} pattern={pattern} style={{ margin: 0 }}/>
+        return (
+          <PatternCard
+            size="small"
+            onPress={() => this.props.onPatternPress(pattern)}
+            pattern={pattern}
+            style={{ margin: 0 }}
+          />
+        )
       case 'no-more-results':
         return (
           <View style={{ paddingVertical: 8, alignItems: 'center' }}>

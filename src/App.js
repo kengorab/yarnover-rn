@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { ThemeProvider } from 'react-native-material-ui'
 import * as auth from './api/auth'
 import * as StorageManager from './manager/StorageManager'
-import Routes from './routes'
+import { AppNavigator, AuthNavigator } from './routes'
 import Theme from './theme'
 
 const uiTheme = {
@@ -41,10 +41,10 @@ export default class App extends React.Component {
     }
 
     if (!this.state.isAuthenticated) {
-      return <Routes.AuthNavigator/>
+      return <AuthNavigator/>
     }
 
-    return <Routes.AppNavigator/>
+    return <AppNavigator/>
   }
 
   render() {

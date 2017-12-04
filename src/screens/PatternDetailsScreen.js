@@ -10,7 +10,6 @@ import ImageButton from '../components/ImageButton'
 import ParallaxImageHeaderLayout from '../components/ParallaxImageHeaderLayout'
 import Touchable from '../components/Touchable'
 import * as StorageManager from '../manager/StorageManager'
-import { appScreens } from '../routes'
 import Theme from '../theme'
 
 export default class PatternDetailsScreen extends React.Component {
@@ -31,9 +30,8 @@ export default class PatternDetailsScreen extends React.Component {
   }
 
   async componentWillMount() {
-    const { pattern } = this.props.navigation.state.params
     const [patternDetails, username] = await Promise.all([
-      Ravelry.getPatternById(pattern.id),
+      Ravelry.getPatternById(this.props.pattern.id),
       StorageManager.getUsername()
     ])
 
@@ -49,11 +47,6 @@ export default class PatternDetailsScreen extends React.Component {
     // In case of any residual snackbars when this screen is closed
     Snackbar.dismiss()
   }
-
-  _navigateBack = () => this.props.navigation.goBack()
-
-  _navigateToPhotosViewer = (activePhotoIndex, allPhotos) =>
-    this.props.navigation.navigate(appScreens.PHOTO_VIEW_SCREEN, { activePhotoIndex, allPhotos })
 
   _detailsTableRows = (patternDetails: PatternDetails) => {
     const rows = [
@@ -95,7 +88,7 @@ export default class PatternDetailsScreen extends React.Component {
   _renderPhotosSection = (patternDetails: PatternDetails) =>
     <ScrollView horizontal={true} style={{ padding: 16 }}>
       {patternDetails.photos.map((photo, i) =>
-        <Touchable key={i} onPress={() => this._navigateToPhotosViewer(i, patternDetails.photos)}>
+        <Touchable key={i} onPress={() => this.props.onPhotoPress(i, patternDetails.photos)}>
           <Image
             style={{ width: 200, height: 200, marginHorizontal: 8 }}
             source={{ uri: photo.photoUrl }}
@@ -373,7 +366,7 @@ export default class PatternDetailsScreen extends React.Component {
   }
 
   render() {
-    const pattern: Pattern = this.props.navigation.state.params.pattern
+    const pattern: Pattern = this.props.pattern
 
     const { firstPhoto } = pattern
     const photoUrl = firstPhoto.mediumUrl || firstPhoto.medium2Url || firstPhoto.squareUrl
@@ -389,7 +382,7 @@ export default class PatternDetailsScreen extends React.Component {
       </View>
 
     return (
-      <ParallaxImageHeaderLayout imageSource={{ uri: photoUrl }} onNavigateBack={this._navigateBack}>
+      <ParallaxImageHeaderLayout imageSource={{ uri: photoUrl }} onNavigateBack={this.props.onClose}>
         <View style={styles.titleSectionHeader}>
           <Text style={styles.name} ellipsizeMode="tail" numberOfLines={1}>
             {pattern.name}

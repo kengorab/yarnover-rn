@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, StyleSheet, View, WebView } from 'react-native'
+import { StyleSheet, View, WebView } from 'react-native'
 import * as RNRestart from 'react-native-restart'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
 import * as Auth from '../api/auth'
@@ -44,21 +44,17 @@ export default class AuthScreen extends Component {
   }
 
   render() {
-    const contents =
-      this.state.displayWebView && this.state.authorizationUrl
-        ? <WebView
-          source={{ uri: this.state.authorizationUrl }}
-          style={{ marginTop: statusBarHeight }}
-          onNavigationStateChange={this._handleWebViewUrlChangeEvent}
-        />
-        : null
+    const contents = this.state.displayWebView && this.state.authorizationUrl
+      ? <WebView
+        source={{ uri: this.state.authorizationUrl }}
+        style={{ marginTop: 20 }}
+        onNavigationStateChange={this._handleWebViewUrlChangeEvent}
+      />
+      : null
 
     return <View style={styles.container}>{contents}</View>
   }
 }
-
-// The marginTop needs to be set on the WebView on iOS to account for the status bar (but not on Android)
-const statusBarHeight = Platform.select({ ios: 20 })
 
 const styles = StyleSheet.create({
   container: {
