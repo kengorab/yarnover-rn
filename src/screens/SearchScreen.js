@@ -3,6 +3,7 @@ import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
 import * as Ravelry from '../api/__mock-api__/Ravelry'
+import AdvancedFilterOptions from '../components/AdvancedFilterOptions'
 import GridView from '../components/GridView'
 import PatternCard from '../components/PatternCard'
 import Theme from '../theme'
@@ -24,11 +25,13 @@ export default class SearchScreen extends React.Component {
 
       zeroState: true,
       searching: false,
-      searchText: ''
+      searchText: '',
+
+      advancedOptionsOpen: false
     }
   }
 
-  _enterSearch = () => this.setState({ searching: true })
+  _enterSearch = () => this.setState({ searching: true, advancedOptionsOpen: false })
   _exitSearch = () => this.setState({ searching: false })
   _setSearchText = (searchText) => this.setState({ searchText })
 
@@ -145,10 +148,12 @@ export default class SearchScreen extends React.Component {
       itemsPerRow={2}
       dataSource={this.state.patternDataSource}
       renderItem={this._renderRow}
+      renderHeader={() => <View style={{ height: 38 }}/>}
       itemStyle={{ margin: 4 }}
       style={{ margin: 4 }}
       onEndReachedThreshold={240}
       onEndReached={this._onEndReached}
+      onScroll={() => this.state.advancedOptionsOpen && this.setState({ advancedOptionsOpen: false })}
     />
 
   render() {
@@ -167,6 +172,12 @@ export default class SearchScreen extends React.Component {
           centerElement={this._getToolbarTitle()}
         />
         {this.state.zeroState ? this._renderZeroState() : this._renderResults()}
+        {!this.state.searching && (
+          <AdvancedFilterOptions
+            open={this.state.advancedOptionsOpen}
+            onToggleOpen={isOpen => this.setState({ advancedOptionsOpen: isOpen })}
+          />
+        )}
       </View>
     )
   }
