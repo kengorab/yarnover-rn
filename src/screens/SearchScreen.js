@@ -176,6 +176,7 @@ export default class SearchScreen extends React.Component {
           <AdvancedFilterOptions
             open={this.state.advancedOptionsOpen}
             onToggleOpen={isOpen => this.setState({ advancedOptionsOpen: isOpen })}
+            onApply={filterOpts => this.setState({ advancedOptionsOpen: false })}
           />
         )}
       </View>
