@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash'
+import { isArray, snakeCase } from 'lodash'
 
 export function getQueryParams(url) {
   const queryString = url.split('?')[1]
@@ -17,5 +17,16 @@ export function getQueryString(queryParams, remappings = {}, snakeCaseify = true
   return Object.entries(queryParams)
     .filter(([key, val]) => !!val)
     .map(([key, val]) => [remappings[key] || (snakeCaseify ? snakeCase(key) : key), val])
+    .map(([key, val]) => `${key}=${val}`).join('&')
+}
+
+export function getSearchFiltersQueryString(filters) {
+  const remappings = {}
+
+  console.log('filters:', filters)
+
+  return Object.entries(filters)
+    .filter(([key, val]) => !!val)
+    .map(([key, val]) => [remappings[key] || key, isArray(val) ? val.filter(v => !!v).join('|') : val])
     .map(([key, val]) => `${key}=${val}`).join('&')
 }

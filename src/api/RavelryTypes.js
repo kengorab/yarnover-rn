@@ -64,6 +64,10 @@ export type SearchPatternsRequest = {
   availability: Availability
 }
 
+export type SearchPatternsFilters = {
+  craft: string | null
+}
+
 export type SearchQueueRequest = {
   patternId: number | null,
   query: string | null,

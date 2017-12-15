@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
-import * as Ravelry from '../api/__mock-api__/Ravelry'
+import * as Ravelry from '../api/Ravelry'
 import AdvancedFilterOptions from '../components/AdvancedFilterOptions'
 import GridView from '../components/GridView'
 import PatternCard from '../components/PatternCard'
@@ -35,8 +35,8 @@ export default class SearchScreen extends React.Component {
   _exitSearch = () => this.setState({ searching: false })
   _setSearchText = (searchText) => this.setState({ searchText })
 
-  _performSearch = async () => {
-    if (!this.state.searchText) {
+  _performSearch = async (filters = {}) => {
+    if (!this.state.searchText || !Object.keys(filters).length === 0) {
       return
     }
 
@@ -48,18 +48,21 @@ export default class SearchScreen extends React.Component {
       zeroState: false,
       patternDataSource: this.state.patternDataSource.cloneWithRows([[{ rowType: 'loader' }]])
     })
-    await this._loadPatternsForPage(this.state.searchText, 0)
+    await this._loadPatternsForPage({ query: this.state.searchText, filters }, 0)
   }
 
-  _loadPatternsForPage = async (query, pageNum) => {
+  _loadPatternsForPage = async ({ query, filters }, pageNum) => {
     try {
       this.loading = true
-      const { paginator, patterns } = await Ravelry.searchPatterns({ query, page: pageNum, pageSize: 24 })
+      const { paginator, patterns } = await Ravelry.searchPatterns(
+        { query, page: pageNum, pageSize: 24, sort: 'best' },
+        filters
+      )
 
       this.paginator = this.paginator || paginator
       this.patterns = (this.patterns || []).concat(patterns)
       this.loading = false
-      this.query = query
+      this.query = { query, filters }
       this.currentPage = pageNum
 
       if (patterns.length === 0) {
@@ -136,11 +139,15 @@ export default class SearchScreen extends React.Component {
   _onEndReached = async () => {
     if (!this.loading) {
       const nextPage = this.currentPage + 1
-      console.log('nextPage', nextPage, 'this.paginator.lastPage', this.paginator.lastPage)
       if (nextPage < this.paginator.lastPage) {
         await this._loadPatternsForPage(this.query, nextPage)
       }
     }
+  }
+
+  _applyAdvancedFilters = async (filterOptions) => {
+    this.setState({ advancedOptionsOpen: false })
+    await this._performSearch(filterOptions)
   }
 
   _renderResults = () =>
@@ -163,7 +170,7 @@ export default class SearchScreen extends React.Component {
           searchable={{
             onSearchPressed: this._enterSearch,
             onSearchClosed: this._exitSearch,
-            onSubmitEditing: this._performSearch,
+            onSubmitEditing: () => this._performSearch(),
             onChangeText: this._setSearchText,
             autoFocus: true,
             placeholder: 'hat, socks, scarf, etc'
@@ -176,7 +183,7 @@ export default class SearchScreen extends React.Component {
           <AdvancedFilterOptions
             open={this.state.advancedOptionsOpen}
             onToggleOpen={isOpen => this.setState({ advancedOptionsOpen: isOpen })}
-            onApply={filterOpts => this.setState({ advancedOptionsOpen: false })}
+            onApply={this._applyAdvancedFilters}
           />
         )}
       </View>

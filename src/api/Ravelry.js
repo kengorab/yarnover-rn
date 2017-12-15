@@ -1,4 +1,4 @@
-import { getQueryString } from '../util/url-utils'
+import { getQueryString, getSearchFiltersQueryString } from '../util/url-utils'
 import { oauthManager } from './auth'
 import Paginator from './domain/Paginator'
 import Pattern from './domain/Pattern'
@@ -10,6 +10,7 @@ import type {
   PaginatedPatternsResponse,
   PaginatedQueueResponse,
   SearchLibraryRequest,
+  SearchPatternsFilters,
   SearchPatternsRequest,
   SearchQueueRequest
 } from './RavelryTypes'
@@ -24,7 +25,10 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   return user
 }
 
-export async function searchPatterns(request: SearchPatternsRequest): Promise<PaginatedPatternsResponse> {
+export async function searchPatterns(
+  request: SearchPatternsRequest,
+  filters: SearchPatternsFilters = {}
+): Promise<PaginatedPatternsResponse> {
   const defaults = {
     query: null,
     page: 1,
@@ -36,10 +40,12 @@ export async function searchPatterns(request: SearchPatternsRequest): Promise<Pa
 
   const requestParams = { ...defaults, ...request }
   const queryString = getQueryString(requestParams, { hasPhoto: 'photo' }, true)
+  const filtersString = getSearchFiltersQueryString(filters)
+  const filtersQueryString = filtersString ? `&${filtersString}` : ''
 
   const { paginator, patterns } = await oauthManager.makeAuthenticatedRequest({
     method: 'GET',
-    url: `${apiRoot}/patterns/search.json?${queryString}`
+    url: `${apiRoot}/patterns/search.json?${queryString}${filtersQueryString}`
   })
 
   return {

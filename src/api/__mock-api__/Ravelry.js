@@ -7,6 +7,7 @@ import type {
   PaginatedPatternsResponse,
   PaginatedQueueResponse,
   SearchLibraryRequest,
+  SearchPatternsFilters,
   SearchPatternsRequest,
   SearchQueueRequest
 } from '../RavelryTypes'
@@ -19,7 +20,10 @@ export async function getCurrentUser() {
   return { username: 'mock-username' }
 }
 
-export async function searchPatterns(request: SearchPatternsRequest): Promise<PaginatedPatternsResponse> {
+export async function searchPatterns(
+  request: SearchPatternsRequest,
+  filters: SearchPatternsFilters = {}
+): Promise<PaginatedPatternsResponse> {
   const { patterns, paginator } = searchPatternsJson
 
   if (request.pageSize) {

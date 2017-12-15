@@ -48,7 +48,12 @@ class FilterOptions extends React.Component {
             bold
             color={Theme.primaryColorDark}
             title="apply"
-            onPress={() => this.props.onApply(this.state)}
+            onPress={() => this.props.onApply({
+              craft: [
+                this.state.craftType.knitting && 'knitting',
+                this.state.craftType.crochet && 'crochet'
+              ]
+            })}
           />
         </View>
       </View>
@@ -73,12 +78,10 @@ export default class AdvancedFilterOptions extends React.Component {
     this.props.onToggleOpen(!this.props.open)
   }
 
-  _applyFilters = (opts) => {
-    const numFilters = [opts.craftType.knitting, opts.craftType.crochet]
-      .reduce((acc, next) => acc + (!!next ? 1 : 0), 0)
-
+  _applyFilters = ({ craft }) => {
+    const numFilters = craft.filter(c => !!c).length
     this.setState({ numFilters })
-    this.props.onApply(opts)
+    this.props.onApply({ craft })
   }
 
   render() {
